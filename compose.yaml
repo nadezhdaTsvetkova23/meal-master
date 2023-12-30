@@ -1,9 +1,12 @@
 services:
-  mongodb:
-    image: 'mongo:latest'
-    environment:
-      - 'MONGO_INITDB_DATABASE=mydatabase'
-      - 'MONGO_INITDB_ROOT_PASSWORD=secret'
-      - 'MONGO_INITDB_ROOT_USERNAME=root'
+  mariadb:
+    container_name: mariadb
+    image: mariadb:latest
+    restart: always
     ports:
-      - '27017'
+      - 3306:3306
+    volumes:
+      - ./database/:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: Wasserkopf45
+      MYSQL_DATABASE: mealmaster
