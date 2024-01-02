@@ -1,6 +1,6 @@
 services:
   mariadb:
-    container_name: mariadb
+    container_name: mariadb_mealmaster
     image: mariadb:latest
     restart: always
     ports:
