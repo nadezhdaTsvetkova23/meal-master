@@ -1,0 +1,136 @@
+//Colors
+$color_base: #f2f2f2;
+$color_blue: #5cb9f2;
+$color_lightblue: #6dccf2;
+$color_green: #03a62c;
+$color_lightgreen: #8fd994;
+$color_red: #ea5557;
+$color_lightred: #eb7181;
+
+
+//Fonts
+@import url('https://fonts.googleapis.com/css2?family=Amatic+SC:wght@700&family=Bitter&display=swap');
+
+body{
+  background-color: $color_base !important;
+  margin-left:15px !important;
+  margin-right: 15px;
+  font-family: 'Bitter', serif;
+  padding-bottom: 15px;
+}
+h5{
+  font-family: 'Amatic SC', cursive;
+  font-size: 35px;
+}
+h1, h2, h3, h4{
+  font-family: "Amatic SC", cursive;
+}
+.navbar-dark{
+  margin-top: 15px;
+  border-radius: 10px;
+  background-color: $color_lightblue !important;
+  height: 70px;
+}
+.white{
+  background-color: white;
+  border-radius: 10px;
+  margin-left: 0px;
+  margin-right: 0px;
+  margin-top: 10px;
+}
+.recipe-img-overview{
+  border-top-right-radius: 10px;
+  border-top-left-radius: 10px;
+  width: 100%;
+  aspect-ratio: 5/4;
+  object-fit: cover;
+}
+.recipe-img-detail{
+  border-radius: 10px;
+  width: 100%;
+  aspect-ratio: 5/4;
+  object-fit: cover;
+}
+.form-check-input:checked{
+  background-color: $color_lightblue !important;
+  border-color: $color_lightblue !important;
+}
+
+.card-recipe{
+  margin-top: 15px;
+  padding: 0px;
+  margin-left: 15px;
+  background-color: white;
+  border-radius: 10px;
+  position:relative;
+}
+.grid-settings{
+  color: $color_lightblue;
+  font-size: 24px;
+  position: absolute;
+  top: 6px;
+  right: 10px;
+  z-index: 999;
+  transition: color .2s;
+}
+.grid-settings:hover{
+  color: $color_blue;
+}
+
+.clickable:hover{
+  cursor: pointer;
+}
+
+.card-recipe-left {
+  @extend .card-recipe;
+  margin-left: 0px !important;
+}
+.card-recipe-content{
+  padding: 10px;
+}
+.hero{
+  text-align: center;
+  padding: 20px;
+}
+.btn-recipe{
+  background-color: $color_lightblue;
+  color: white;
+  border-color: $color_lightblue;
+
+}
+.btn-recipe:hover {
+  background-color: $color_blue;
+  border-color: $color_blue;
+}
+.btn-delete{
+  background-color: $color_lightred;
+  color: white;
+  border-color: $color_lightred;
+  margin-left: 20px;
+
+}
+.btn-delete:hover {
+  background-color: $color_red;
+  border-color: $color_red;
+}
+.btn-edit{
+  background-color: $color_lightgreen;
+  color: white;
+  border-color: $color_lightgreen;
+  margin-left: 20px;
+
+}
+.btn-edit:hover {
+  background-color: $color_green;
+  border-color: $color_green;
+}
+.recipe-instructions{
+  padding-top: 30px;
+}
+.recipe-ingredients{
+  padding-top: 10px;
+  padding-left: 20px;
+}
+.create-recipe{
+  padding: 20px;
+}
