@@ -102,6 +102,11 @@ h1, h2, h3, h4{
   background-color: $color_blue;
   border-color: $color_blue;
 }
+.btn-setup{
+  @extend .btn-recipe;
+  margin-top: 20px;
+}
+
 .btn-delete{
   background-color: $color_lightred;
   color: white;
@@ -133,4 +138,9 @@ h1, h2, h3, h4{
 }
 .create-recipe{
   padding: 20px;
+}
+.introduction-text{
+  margin-left: 20%;
+  margin-right: 20%;
+  margin-top: 20px;
 }

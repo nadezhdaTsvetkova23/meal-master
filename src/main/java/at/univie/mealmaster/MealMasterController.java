@@ -14,6 +14,17 @@ public class MealMasterController {
 
     @Autowired
     private RecipeRepository recipeRepository;
+
+    @GetMapping("/")
+    String showIndexPage(){
+        boolean contentGenerated =  new CheckIfContentGenerated().checkFile();
+        if(contentGenerated){
+            return "index";
+        } else{
+            return "setup";
+        }
+    }
+
     @GetMapping("/addRecipe")
     String showAddRecipeForm(Model model){
         model.addAttribute("recipe", new Recipe());
@@ -24,5 +35,13 @@ public class MealMasterController {
     String submitAddRecipeForm(@ModelAttribute Recipe recipe){
         recipeRepository.save(recipe);
         return "redirect:/success";
+    }
+
+    @PostMapping("/generateData")
+    String generateData(){
+
+        //add generateData()
+
+        return "redirect:/";
     }
 }

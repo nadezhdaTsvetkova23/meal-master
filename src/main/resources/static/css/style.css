@@ -91,15 +91,19 @@ h1, h2, h3, h4 {
   padding: 20px;
 }
 
-.btn-recipe {
+.btn-recipe, .btn-setup {
   background-color: #6dccf2;
   color: white;
   border-color: #6dccf2;
 }
 
-.btn-recipe:hover {
+.btn-recipe:hover, .btn-setup:hover {
   background-color: #5cb9f2;
   border-color: #5cb9f2;
+}
+
+.btn-setup {
+  margin-top: 20px;
 }
 
 .btn-delete {
@@ -137,6 +141,12 @@ h1, h2, h3, h4 {
 
 .create-recipe {
   padding: 20px;
+}
+
+.introduction-text {
+  margin-left: 20%;
+  margin-right: 20%;
+  margin-top: 20px;
 }
 
 /*# sourceMappingURL=style.css.map */
