@@ -12,3 +12,10 @@ services:
       MYSQL_DATABASE: mealmaster
       MYSQL_USER: mealmaster_user
       MYSQL_PASSWORD: d4bc1e78e053c6c2d0419bd742b41adc
+  phpmyadmin:
+    image: phpmyadmin
+    restart: always
+    ports:
+      - "8090:80"
+    environment:
+      PMA_HOST: mariadb_mealmaster
