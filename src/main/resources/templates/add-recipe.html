@@ -20,7 +20,7 @@
                 </div>
                 <div class="col-md-3">
                     <label for="portions" class="form-label">Portionen</label>
-                    <input name="portions" type="text" class="form-control" id="portions"  aria-describedby="inputGroupPrepend2" required>
+                    <input name="portions" type="text" class="form-control" id="portions" aria-describedby="inputGroupPrepend2" th:field="*{servings}" required>
                 </div>
                 <div class="col-md-12">
                     <label for="recipeLink" class="form-label">Link zu Rezept</label>
@@ -28,11 +28,11 @@
                 </div>
                 <div class="col-md-12">
                     <label for="imgLink" class="form-label">Bildlink</label>
-                    <input name="imglink" type="text" class="form-control" id="imgLink">
+                    <input name="imglink" type="text" class="form-control" id="imgLink" th:field="*{imageLink}">
                 </div>
                 <div class="col-md-12">
                     <label for="instructions" class="form-label">Anleitung</label>
-                    <textarea name="description" style="height: 108px;" type="text" class="form-control" id="instructions" required></textarea>
+                    <textarea name="description" style="height: 108px;" type="text" class="form-control" id="instructions" th:field="*{instruction}" required></textarea>
                 </div>
                 <div class="col-12">
                     <div class="form-check">

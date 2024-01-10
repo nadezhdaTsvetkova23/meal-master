@@ -17,43 +17,64 @@ public class MealMasterController {
     private RecipeRepository recipeRepository;
 
     @GetMapping("/")
-    String showIndexPage(){
+    String showIndexPage() {
         //Checks if generatedContent.txt contains true and forwards to index. If it does not exist it forwards to setup page
-        boolean contentGenerated =  new CheckIfContentGenerated().checkFile();
-        if(contentGenerated){
+        boolean contentGenerated = new CheckIfContentGenerated().checkFile();
+        if (contentGenerated) {
             return "index";
-        } else{
+        } else {
             return "setup";
         }
     }
 
     @GetMapping("/addRecipe")
-    String showAddRecipeForm(Model model){
+    String showAddRecipeForm(Model model) {
         model.addAttribute("recipe", new Recipe());
         return "add-recipe";
     }
 
     @PostMapping("/addRecipe")
-    String submitAddRecipeForm(@ModelAttribute Recipe recipe){
+    String submitAddRecipeForm(@ModelAttribute Recipe recipe) {
         recipeRepository.save(recipe);
-        return "redirect:/success";
+        return "redirect:/recipe/" + recipe.getId();
     }
 
+    @GetMapping("/editRecipe/{id}")
+    String showEditRecipeForm(@PathVariable("id") long id, Model model) {
+        Recipe recipe = recipeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid Id:" + id));
+        model.addAttribute("recipe", recipe);
+        return "edit-recipe";
+    }
+
+    @PostMapping("/editRecipe")
+    String submitEditRecipeForm(@ModelAttribute Recipe recipe) {
+        recipeRepository.save(recipe);
+        return "redirect:/recipe/" + recipe.getId();
+    }
+
+    @GetMapping("/deleteRecipe/{id}")
+    String deleteRecipe(@PathVariable("id") long id, Model model) {
+        Recipe recipe = recipeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid Id:" + id));
+        recipeRepository.delete(recipe);
+        return "redirect:/";
+    }
+
+
     @GetMapping("/list")
-    String showRecipeList(Model model){
+    String showRecipeList(Model model) {
         model.addAttribute("recipes", recipeRepository.findAll());
         return "list";
     }
 
     @GetMapping("/recipe/{id}")
-    String showRecipe(@PathVariable("id") long id, Model model){
+    String showRecipe(@PathVariable("id") long id, Model model) {
         Recipe recipe = recipeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid Id:" + id));
         model.addAttribute("recipe", recipe);
         return "show-recipe";
     }
 
     @GetMapping("/generateData")
-    String generateData(){
+    String generateData() {
 
         //add generateData()
         return "redirect:/";
