@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:insert="fragments/head.html :: head">
+</head>
+
+<body>
+<nav th:replace="fragments/navbar.html :: navbar"></nav>
+<div class="container-fluid">
+    <div class="row row-cols-4 g-3 list-top-spacer">
+        <div class="col" th:each="recipe : ${recipes}">
+            <div th:onclick="'window.location.href = \'' + '/recipe/' + ${recipe.id} + '\''" class="card-recipe clickable">
+                <img th:src="@{/img/placeholder.png}" class="recipe-img-overview" alt="...">
+                <div class="card-recipe-content">
+                    <a href="/edit/name"><i class="grid-settings bi bi-gear-fill"></i></a>
+                    <h5 class="card-title" th:text="${recipe.getName()}"></h5>
+                    <p class="card-text">4 Portionen</p>
+                    <span class="badge bg-dark" style="background-color: #e00707 !important;">Vegan</span>
+                    <span class="badge bg-dark" style="background-color: #03a62c !important;">Sommer</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col hero">
+            <h2>Nichts passendes Gefunden?</h2>
+            <div class="d-flex" aria-label="...">
+                <button onclick="topFunction(); window.location.reload();" type="button" class="btn w-100 btn-recipe">
+                    Neue Rezepte laden
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+<div th:replace="fragments/footer.html :: footer"></div>
+</html>

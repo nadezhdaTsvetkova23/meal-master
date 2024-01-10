@@ -51,13 +51,24 @@ h1, h2, h3, h4 {
   border-color: #6dccf2 !important;
 }
 
-.card-recipe, .card-recipe-left {
-  margin-top: 15px;
-  padding: 0px;
-  margin-left: 15px;
+.card-recipe, .card-recipe-detail, .card-recipe-detail-left {
   background-color: white;
   border-radius: 10px;
   position: relative;
+}
+
+.card-recipe-detail, .card-recipe-detail-left {
+  margin-top: 15px;
+  padding: 0px;
+  margin-left: 15px;
+}
+
+.card-recipe-detail-left {
+  margin-left: 0px !important;
+}
+
+.list-top-spacer {
+  margin-top: 7px;
 }
 
 .grid-settings {
@@ -78,10 +89,6 @@ h1, h2, h3, h4 {
   cursor: pointer;
 }
 
-.card-recipe-left {
-  margin-left: 0px !important;
-}
-
 .card-recipe-content {
   padding: 10px;
 }
@@ -91,15 +98,19 @@ h1, h2, h3, h4 {
   padding: 20px;
 }
 
-.btn-recipe {
+.btn-recipe, .btn-setup {
   background-color: #6dccf2;
   color: white;
   border-color: #6dccf2;
 }
 
-.btn-recipe:hover {
+.btn-recipe:hover, .btn-setup:hover {
   background-color: #5cb9f2;
   border-color: #5cb9f2;
+}
+
+.btn-setup {
+  margin-top: 20px;
 }
 
 .btn-delete {
@@ -137,6 +148,12 @@ h1, h2, h3, h4 {
 
 .create-recipe {
   padding: 20px;
+}
+
+.introduction-text {
+  margin-left: 20%;
+  margin-right: 20%;
+  margin-top: 20px;
 }
 
 /*# sourceMappingURL=style.css.map */
