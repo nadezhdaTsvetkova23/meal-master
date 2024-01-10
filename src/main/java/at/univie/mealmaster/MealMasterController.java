@@ -1,14 +1,16 @@
 package at.univie.mealmaster;
 
 import at.univie.mealmaster.model.Recipe;
+import at.univie.mealmaster.model.Tag;
 import at.univie.mealmaster.repository.RecipeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Arrays;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Controller
 public class MealMasterController {
@@ -34,7 +36,16 @@ public class MealMasterController {
     }
 
     @PostMapping("/addRecipe")
-    String submitAddRecipeForm(@ModelAttribute Recipe recipe) {
+    String submitAddRecipeForm(@ModelAttribute Recipe recipe, @RequestParam("tags") String tags) {
+       /* Set<Tag> tagSet = Arrays.stream(tags.split(","))
+                .map(String::trim)
+                .map(Tag::new)
+                .map(new )
+                .collect(Collectors.toSet());
+
+
+
+        recipe.setTags(tagSet);*/
         recipeRepository.save(recipe);
         return "redirect:/recipe/" + recipe.getId();
     }

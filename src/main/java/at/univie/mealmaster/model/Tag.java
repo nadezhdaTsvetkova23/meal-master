@@ -16,6 +16,11 @@ public class Tag {
     @ManyToMany(mappedBy = "tags")
     private Set<Recipe> recipes;
 
+    public Tag(String tag){
+        setName(tag);
+        setColor("126346");
+    }
+
     public String getName() {
         return name;
     }
