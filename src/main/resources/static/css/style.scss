@@ -57,13 +57,25 @@ h1, h2, h3, h4{
 }
 
 .card-recipe{
-  margin-top: 15px;
-  padding: 0px;
-  margin-left: 15px;
   background-color: white;
   border-radius: 10px;
   position:relative;
 }
+.card-recipe-detail{
+  @extend .card-recipe;
+  margin-top: 15px;
+  padding: 0px;
+  margin-left: 15px;
+}
+.card-recipe-detail-left{
+  @extend .card-recipe-detail;
+  margin-left: 0px !important;
+}
+
+.list-top-spacer{
+  margin-top: 7px;
+}
+
 .grid-settings{
   color: $color_lightblue;
   font-size: 24px;
@@ -79,11 +91,6 @@ h1, h2, h3, h4{
 
 .clickable:hover{
   cursor: pointer;
-}
-
-.card-recipe-left {
-  @extend .card-recipe;
-  margin-left: 0px !important;
 }
 .card-recipe-content{
   padding: 10px;
