@@ -1,15 +1,25 @@
-package at.univie.mealmaster.generator.items;
+package at.univie.mealmaster.model;
 
+import jakarta.persistence.*;
+
+@Entity
 public class Unit {
-    private String name;
-    private String abbreviation;
-    private int id;
 
-    public int getId() {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, length = 50)
+    private String name;
+
+    @Column(nullable = false, length = 10)
+    private String abbreviation;
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

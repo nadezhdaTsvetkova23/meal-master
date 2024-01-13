@@ -17,9 +17,25 @@ public class Recipe {
     @GeneratedValue
     private Long id;
 
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "RecipeContainsIngredient",
+            joinColumns = @JoinColumn(name = "recipe_id"),
+            inverseJoinColumns = @JoinColumn(name = "ingredient_id")
+    )
+    private Set<Ingredient> ingredients;
+
+    public Set<Ingredient> getIngredients() {
+        return ingredients;
+    }
+
+    public void setIngredients(Set<Ingredient> ingredients) {
+        this.ingredients = ingredients;
+    }
+
     @ManyToMany
     @JoinTable(
-            name = "recipehastag",
+            name = "RecipeHasTag",
             joinColumns = @JoinColumn(name = "recipe_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_name")
     )

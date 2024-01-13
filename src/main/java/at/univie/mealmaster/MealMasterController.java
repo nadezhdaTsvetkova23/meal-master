@@ -1,7 +1,9 @@
 package at.univie.mealmaster;
 
+import at.univie.mealmaster.model.Ingredient;
 import at.univie.mealmaster.model.Recipe;
 import at.univie.mealmaster.model.Tag;
+import at.univie.mealmaster.repository.IngredientRepository;
 import at.univie.mealmaster.repository.RecipeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,6 +19,7 @@ public class MealMasterController {
 
     @Autowired
     private RecipeRepository recipeRepository;
+    private IngredientRepository ingredientRepository;
 
     @GetMapping("/")
     String showIndexPage() {
@@ -48,6 +51,12 @@ public class MealMasterController {
         recipe.setTags(tagSet);*/
         recipeRepository.save(recipe);
         return "redirect:/recipe/" + recipe.getId();
+    }
+
+    @PostMapping("/addIngredient")
+    String showIngredientsToChooseFrom(@ModelAttribute Ingredient ingredient){
+        ingredientRepository.save(ingredient);
+        return "redirect:/recipe/" + ingredient.getId();
     }
 
     @GetMapping("/editRecipe/{id}")

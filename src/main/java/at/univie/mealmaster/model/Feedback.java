@@ -1,15 +1,19 @@
 package at.univie.mealmaster.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
-public class Rating {
+public class Feedback {
+
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ManyToOne // Many feedbacks can be associated with one recipe
+    @JoinColumn(name = "recipe_id", nullable = false)
+    private Recipe recipe;
+
+    @Lob
     private String comment;
     @Column(nullable = false)
     private Long score;
@@ -20,6 +24,14 @@ public class Rating {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Recipe getRecipe() {
+        return recipe;
+    }
+
+    public void setRecipe(Recipe recipe) {
+        this.recipe = recipe;
     }
 
     public String getComment() {

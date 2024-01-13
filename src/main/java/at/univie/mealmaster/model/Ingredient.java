@@ -1,23 +1,27 @@
 package at.univie.mealmaster.model;
 
 import jakarta.persistence.*;
+
 import java.util.Set;
 
 @Entity
-public class Tag {
+public class Ingredient {
 
     @Id
-    private String name;
-    private String color;
+    @GeneratedValue
+    private Long id;
 
-    @ManyToMany(mappedBy = "tags")
+    private String name;
+
+    @ManyToMany(mappedBy = "ingredients")
     private Set<Recipe> recipes;
 
-    public Tag() {}
+    public Long getId() {
+        return id;
+    }
 
-    public Tag(String name, String color) {
-        this.name = name;
-        this.color = color;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -26,14 +30,6 @@ public class Tag {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public void setColor(String color) {
-        this.color = color;
     }
 
     public Set<Recipe> getRecipes() {
