@@ -1,8 +1,9 @@
+/*
 package at.univie.mealmaster.generator;
 
+import at.univie.mealmaster.model.*;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
-import at.univie.mealmaster.generator.items.*;
 
 import java.io.File;
 import java.io.FileReader;
@@ -271,3 +272,4 @@ public class GenerateData {
         }
 
 }
+*/

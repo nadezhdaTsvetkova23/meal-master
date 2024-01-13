@@ -2,6 +2,8 @@ package at.univie.mealmaster.model;
 
 import jakarta.persistence.*;
 
+import java.util.Set;
+
 @Entity
 public class Unit {
 
@@ -14,6 +16,9 @@ public class Unit {
 
     @Column(nullable = false, length = 10)
     private String abbreviation;
+
+    @OneToMany(mappedBy = "unit")
+    private Set<RecipeIngredient> recipeIngredients;
 
     public Long getId() {
         return id;

@@ -13,8 +13,8 @@ public class Ingredient {
 
     private String name;
 
-    @ManyToMany(mappedBy = "ingredients")
-    private Set<Recipe> recipes;
+    @OneToMany(mappedBy = "ingredient")
+    private Set<RecipeIngredient> recipeIngredients;
 
     public Long getId() {
         return id;
@@ -32,11 +32,4 @@ public class Ingredient {
         this.name = name;
     }
 
-    public Set<Recipe> getRecipes() {
-        return recipes;
-    }
-
-    public void setRecipes(Set<Recipe> recipes) {
-        this.recipes = recipes;
-    }
 }
