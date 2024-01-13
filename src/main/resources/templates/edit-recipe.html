@@ -16,8 +16,8 @@
           <input name="name" type="text" class="form-control" id="name" th:field="*{name}" th:value="${recipe.getName()}" required>
         </div>
         <div class="col-md-3">
-          <label for="tags" class="form-label">Tags (mit , getrennt)</label>
-          <input name="tags" type="text" class="form-control" id="tags"  aria-describedby="inputGroupPrepend2">
+          <label for="string-tags" class="form-label">Tags (mit , getrennt)</label>
+          <input name="string-tags" type="text" class="form-control" id="string-tags"  aria-describedby="inputGroupPrepend2" th:value="${recipe.getTagsString()}">
         </div>
         <div class="col-md-3">
           <label for="portions" class="form-label">Portionen</label>

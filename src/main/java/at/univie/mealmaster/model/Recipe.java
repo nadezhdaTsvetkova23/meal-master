@@ -96,4 +96,17 @@ public class Recipe {
     public void setTags(Set<Tag> tags) {
         this.tags = tags;
     }
+
+    public String getTagsString(){
+        StringBuilder returnString = new StringBuilder();
+        for(Tag tag: tags){
+            returnString.append(tag.getName()).append(", ");
+        }
+
+        //Remove the last comma
+        if (returnString.length() > 0) {
+            returnString.setLength(returnString.length() - 2);
+        }
+        return returnString.toString();
+    }
 }

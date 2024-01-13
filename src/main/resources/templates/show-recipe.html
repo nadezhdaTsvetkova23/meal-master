@@ -8,10 +8,10 @@
 <div class="container-fluid">
   <div class="row">
     <div class="col col-7 card-recipe-detail-left">
-      <div th:if="${recipe.getImageLink() != null}">
+      <div th:if="${recipe.getImageLink() != ''}">
         <img th:src="${recipe.getImageLink()}" class="recipe-img-detail" alt="...">
       </div>
-      <div th:unless="${recipe.getImageLink() != null}">
+      <div th:unless="${recipe.getImageLink() != ''}">
         <img th:src="@{/img/placeholder.png}" class="recipe-img-detail" alt="...">
       </div>
     </div>
@@ -29,9 +29,7 @@
     <div class="col card-recipe-detail-left">
       <div class="card-recipe-content">
         <h1 th:text="${recipe.getName()}"></h1>
-
-        <span class="badge bg-dark" style="background-color: #e00707 !important;">Vegan</span>
-        <span class="badge bg-dark" style="background-color: #03a62c !important;">Sommer</span>
+        <span class="badge bg-dark badge-margin" th:each="tag : ${recipe.tags}" th:style="'background-color: #' + ${tag.color} + ' !important'" th:text="${tag.name}">Tag Name</span>
         <p th:text="${recipe.getInstruction()}" class="recipe-instructions"></p>
         <button th:onclick="'window.location.href = \'' + '/editRecipe/' + ${recipe.id} + '\''" type="button" class="btn btn-recipe float-right">Rezept bearbeiten</button><button class="btn btn-edit" onclick="window.location.href = '/edit';">Zutaten bearbeiten</button>
       </div>

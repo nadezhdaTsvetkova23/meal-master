@@ -1,6 +1,12 @@
 package at.univie.mealmaster.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 
 @Entity
@@ -13,11 +19,19 @@ public class Tag {
     @ManyToMany(mappedBy = "tags")
     private Set<Recipe> recipes;
 
-    public Tag() {}
+    //Required by Hibernate
+    public Tag(){}
 
-    public Tag(String name, String color) {
-        this.name = name;
-        this.color = color;
+    public Tag(String tag){
+        // List of colors
+        Set<String> colors = new HashSet<>(Arrays.asList(
+                "0fa538", "6fcaf0", "63b7e7", "95c991", "ea5557", "eb7181"
+        ));
+        String[] colorArray = colors.toArray(new String[0]);
+
+        setName(tag);
+        //Add a random color to new Tags
+        setColor(colorArray[new Random().nextInt(colorArray.length)]);
     }
 
     public String getName() {
