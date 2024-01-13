@@ -2,7 +2,7 @@ package at.univie.mealmaster.generator.items;
 
 public class Unit {
     private String name;
-    private String abreviation;
+    private String abbreviation;
     private int id;
 
     public int getId() {
@@ -21,11 +21,11 @@ public class Unit {
         this.name = name;
     }
 
-    public String getAbreviation() {
-        return abreviation;
+    public String getAbbreviation() {
+        return abbreviation;
     }
 
-    public void setAbkuerzung(String abreviation) {
-        this.abreviation = abreviation;
+    public void setAbbreviation(String abbreviation) {
+        this.abbreviation = abbreviation;
     }
 }

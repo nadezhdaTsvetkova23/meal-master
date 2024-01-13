@@ -17,8 +17,8 @@ public class Ingredient {
         return ingredient;
     }
 
-    public void setIngredient(String ingredienten) {
-        this.ingredient = ingredienten;
+    public void setIngredient(String ingredients) {
+        this.ingredient = ingredients;
     }
 
     public String getForm() {

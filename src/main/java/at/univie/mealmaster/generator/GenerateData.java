@@ -4,17 +4,19 @@ import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 import at.univie.mealmaster.generator.items.*;
 
+import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.Random;
 
 public class GenerateData {
 
     //TURN OFF TO WRITE TO DATABASE
-    static boolean safe = true;
+    static boolean safe = false;
 
 
     public void generateData() {
@@ -26,8 +28,11 @@ public class GenerateData {
         int ingredientError = 0;
         Map<String, List<Ingredient>> ingredientsByForm = null;
         Ingredient[] ingredients = null;
+        File fileIngredients = new File("json/ingredients.json");
+        String absolutePathIngredient = fileIngredients.getAbsolutePath();
+
         try {
-            ingredients = new Gson().fromJson(new JsonReader(new FileReader("json/ingredients.json")), Ingredient[].class);
+            ingredients = new Gson().fromJson(new JsonReader(new FileReader(absolutePathIngredient)), Ingredient[].class);
 
             //Sort into a Map based on Form
             ingredientsByForm = Arrays.stream(ingredients).collect(Collectors.groupingBy(Ingredient::getForm));
@@ -54,7 +59,7 @@ public class GenerateData {
 
         //ingredient alternative
         int ingredientAlternativeError = 0;
-        assert ingredientsByForm != null;
+        //assert ingredientsByForm != null;
         for (var entry : ingredientsByForm.entrySet()) {
             for (Ingredient ingredient : entry.getValue()) {
                 int i = 0;
@@ -62,46 +67,51 @@ public class GenerateData {
                     i++;
                     int random = (int)Math.floor(Math.random()*(entry.getValue().size()));
                     if (!safe) {
-                        if(!db.addQuery("INSERT INTO Alternative ingredient (id_1, id_2) SELECT z1.id, z2.id FROM ingredient z1, ingredient z2 WHERE z1.name ='" + ingredient.getIngredient() + "' AND z2.name = '" + entry.getValue().get(random).getIngredient() + "'")){
+                        if(!db.addQuery("INSERT INTO AlternativeIngredient (id_1, id_2) SELECT z1.id, z2.id FROM ingredient z1, ingredient z2 WHERE z1.name ='" + ingredient.getIngredient() + "' AND z2.name = '" + entry.getValue().get(random).getIngredient() + "'")){
                             ingredientAlternativeError++;
                         }
 
                     } else {
-                        System.out.println("INSERT INTO Alternative ingredient (id_1, id_2) SELECT z1.id, z2.id FROM ingredient z1, ingredient z2 WHERE z1.name ='" + ingredient.getIngredient() + "' AND z2.name = '" + entry.getValue().get(random).getIngredient() + "'");
+                        System.out.println("INSERT INTO AlternativeIngredient (id_1, id_2) SELECT z1.id, z2.id FROM ingredient z1, ingredient z2 WHERE z1.name ='" + ingredient.getIngredient() + "' AND z2.name = '" + entry.getValue().get(random).getIngredient() + "'");
                     }
                 }
             }
         }
-        System.out.println("Alternative ingredient added: " + db.checkDatasets("Alternative ingredient")+ ", "+ingredientAlternativeError+" Errors appeared.");
+        System.out.println("Alternative ingredient added: " + db.checkDatasets("AlternativeIngredient")+ ", "+ingredientAlternativeError+" Errors appeared.");
 
 
-        //Unit
+//Unit
         int unitErrors = 0;
+        File fileUnits = new File("json/units.json");
+        String absolutePathUnits = fileUnits.getAbsolutePath();
+
         try {
-            Unit[] units = new Gson().fromJson(new JsonReader(new FileReader("json/units.json")), Unit[].class);
+            Unit[] units = new Gson().fromJson(new JsonReader(new FileReader(absolutePathUnits)), Unit[].class);
 
             for (Unit unit : units) {
                 if (!safe) {
-                    if(!db.addQuery("INSERT INTO Unit (name, abreviation) VALUES ('" + unit.getName() + "', '" + unit.getAbreviation() + "')")){
+                    if(!db.addQuery("INSERT INTO Unit (id, name, abbreviation) VALUES ('" + unit.getId() + "', '" + unit.getName() + "', '" + unit.getAbbreviation() + "')")){
                         unitErrors++;
                     }
                 } else {
-                    System.out.println("INSERT INTO Unit (name, abreviation) VALUES ('" + unit.getName() + "', '" + unit.getAbreviation() + "')");
+                    System.out.println("INSERT INTO Unit (id, name, abbreviation) VALUES ('" + unit.getId() + "', '" + unit.getName() + "', '" + unit.getAbbreviation() + "')");
                 }
             }
         } catch (Exception e) {
             System.err.println("Error while processing Unit:");
             System.err.println(e);
         }
-        System.out.println("Units added: " + db.checkDatasets("Unit")+ ", "+unitErrors+" Errors appeared.");
+        System.out.println("Units added: " + db.checkDatasets("Unit") + ", " + unitErrors + " Errors appeared.");
 
 
 
         //Tag
         int tagErrors = 0;
         Tag[] tags = null;
+        File fileTags = new File("json/tags.json");
+        String absolutePathTags = fileTags.getAbsolutePath();
         try{
-            tags = new Gson().fromJson(new JsonReader(new FileReader("json/tags.json")), Tag[].class);
+            tags = new Gson().fromJson(new JsonReader(new FileReader(absolutePathTags)), Tag[].class);
         }catch(Exception e){
             System.err.println("Error while processing Tag:");
             System.err.println(e);
@@ -123,15 +133,17 @@ public class GenerateData {
         int recipeIngredientErrors = 0;
         List<String> dishes = new ArrayList<>();
         ImageLink[] imageLink = null;
+        File fileImageLink = new File("json/imageLink.json");
+        String absolutePathImageLink = fileImageLink.getAbsolutePath();
         try{
-            imageLink = new Gson().fromJson(new JsonReader(new FileReader("json/imageLink.json")), ImageLink[].class);
+            imageLink = new Gson().fromJson(new JsonReader(new FileReader(absolutePathImageLink)), ImageLink[].class);
 
         }catch(Exception e){
             System.err.println("Error while processing ImageLink:");
             System.err.println(e);
         }
         //Amount of Recipes to generate
-        int recipesAmount = 1000;
+        int recipesAmount = 20;
 
         List<String> dish = new ArrayList<>();
         dish.add("soup");
@@ -186,22 +198,22 @@ public class GenerateData {
             dishes.add(name.toString());
             if (!safe) {
                 //Recipe
-                if(!db.addQuery("INSERT INTO Recipe (name, imageLink, portions, description) VALUES ('" + name + "', '" + imageLink[image].getImageLink()+ "',"+ ((randomingredient%5)+2) +", '"+ instructions.toString() + "')")){
+                if(!db.addQuery("INSERT INTO Recipe (id, instruction, servings, name, link, image_link) VALUES ('" + name + "', '" + imageLink[image].getImageLink()+ "',"+ ((randomingredient%5)+2) +", '"+ instructions.toString() + "')")){
                     recipeErrors++;
                 }
 
                 //Recipe contains ingredient
-                if(!db.addQuery("INSERT INTO RecipeContainsIngredient (recipe_id, ingredient_id, unit_id, menge) SELECT r.id, z.id, e.id, "+ (((randomingredient%7)+1)*100) +" FROM Recipe r, ingredient z, Unit e WHERE r.name = '" + name.toString() +"' AND z.name = '" + ingredients[ingredient].getIngredient() +"' AND e.name = 'Gramm'")){
+                if(!db.addQuery("INSERT INTO RecipeContainsIngredient (recipe_id, ingredient_id, unit_id, quantity) SELECT r.id, z.id, e.id, "+ (((randomingredient%7)+1)*100) +" FROM Recipe r, ingredient z, Unit e WHERE r.name = '" + name.toString() +"' AND z.name = '" + ingredients[ingredient].getIngredient() +"' AND e.name = 'Gramm'")){
                     recipeIngredientErrors++;
                 }
-                if(!db.addQuery("INSERT INTO RecipeContainsIngredient (recipe_id, ingredient_id, unit_id, menge) SELECT r.id, z.id, e.id, "+ (((randomDish%4)+1)*100) +" FROM Recipe r, ingredient z, Unit e WHERE r.name = '" + name.toString() +"' AND z.name = '" + ingredients[randomingredient].getIngredient() +"' AND e.name = 'Gramm'")){
+                if(!db.addQuery("INSERT INTO RecipeContainsIngredient (recipe_id, ingredient_id, unit_id, quantity) SELECT r.id, z.id, e.id, "+ (((randomDish%4)+1)*100) +" FROM Recipe r, ingredient z, Unit e WHERE r.name = '" + name.toString() +"' AND z.name = '" + ingredients[randomingredient].getIngredient() +"' AND e.name = 'Gramm'")){
                     recipeIngredientErrors++;
                 };
             } else {
-                System.out.println("INSERT INTO Recipe (name, imageLink, portions, description) VALUES ('" + name.toString() + "', '" + imageLink[image].getImageLink()+ "', "+ ((randomingredient%5)+2) +", '"+ instructions.toString() + "')");
+                System.out.println("INSERT INTO Recipe (id, instruction, servings, name, link, image_link) VALUES ('" + name.toString() + "', '" + imageLink[image].getImageLink()+ "', "+ ((randomingredient%5)+2) +", '"+ instructions.toString() + "')");
 
-                System.out.println("INSERT INTO RecipeContainsIngredient (recipe_id, ingredient_id, unit_id, menge) SELECT r.id, z.id, e.id, "+ (((randomingredient%7)+1)*100) +" FROM Recipe r, ingredient z, Unit e WHERE r.name = '" + name.toString() +"' AND z.name = '" + ingredients[ingredient].getIngredient() +"' AND e.name = 'Gramm'");
-                System.out.println("INSERT INTO RecipeContainsIngredient (recipe_id, ingredient_id, unit_id, menge) SELECT r.id, z.id, e.id, "+ (((randomDish%4)+1)*100) +" FROM Recipe r, ingredient z, Unit e WHERE r.name = '" + name.toString() +"' AND z.name = '" + ingredients[randomingredient].getIngredient() +"' AND e.name = 'Gramm'");
+                System.out.println("INSERT INTO RecipeContainsIngredient (recipe_id, ingredient_id, unit_id, quantity) SELECT r.id, z.id, e.id, "+ (((randomingredient%7)+1)*100) +" FROM Recipe r, ingredient z, Unit e WHERE r.name = '" + name.toString() +"' AND z.name = '" + ingredients[ingredient].getIngredient() +"' AND e.name = 'Gramm'");
+                System.out.println("INSERT INTO RecipeContainsIngredient (recipe_id, ingredient_id, unit_id, quantity) SELECT r.id, z.id, e.id, "+ (((randomDish%4)+1)*100) +" FROM Recipe r, ingredient z, Unit e WHERE r.name = '" + name.toString() +"' AND z.name = '" + ingredients[randomingredient].getIngredient() +"' AND e.name = 'Gramm'");
             }
         }
         System.out.println("Recipe added: " + db.checkDatasets("Recipe")+ ", "+recipeErrors+" Errors appeared.");
@@ -229,5 +241,33 @@ public class GenerateData {
         System.out.println("RecipeHasTag added: " + db.checkDatasets("RecipeHasTag")+ ", "+tagRecipeErrors+" Errors appeared.");
 
 
-    }
+        //Feedback
+            int feedbackErrors = 0;
+            int numberOfFeedbackEntriesToGenerate = 150;
+            Random random = new Random();
+            try {
+                for (int n = 0; n < numberOfFeedbackEntriesToGenerate; n++) {
+                    String randomComment = "Sample comment  " + n;
+                    int randomScore = 1 + random.nextInt(5);
+
+                    String feedbackQuery = String.format(
+                            "INSERT INTO Feedback (recipe_id, comment, score) " +
+                                    "SELECT id, '%s', %d FROM Recipe " +
+                                    "ORDER BY RAND() LIMIT 1",
+                            randomComment, randomScore
+                    );
+
+                    if (!db.addQuery(feedbackQuery)) {
+                        feedbackErrors++;
+                    }
+                }
+            } catch (Exception e) {
+                System.err.println("Error while generating feedback:");
+                e.printStackTrace();
+                feedbackErrors++;
+            }
+
+            System.out.println("Feedback added: " + (numberOfFeedbackEntriesToGenerate - feedbackErrors) + ", " + feedbackErrors + " Errors appeared.");
+        }
+
 }

@@ -21,7 +21,7 @@ CREATE TABLE RecipeHasTag(
                              PRIMARY KEY (recipe_id, tag_name)
 );
 
-CREATE TABLE Rating(
+CREATE TABLE Feedback(
                        id INT AUTO_INCREMENT,
                        recipe_id INT,
                        comment TEXT,
@@ -39,7 +39,6 @@ CREATE TABLE Unit(
 
 CREATE TABLE Ingredient(
                            id INT AUTO_INCREMENT,
-                           imagelink TEXT,
                            name VARCHAR(50) NOT NULL UNIQUE,
                            PRIMARY KEY(id)
 );
