@@ -7,10 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -52,6 +49,7 @@ public class MealMasterController {
         // Split the tags string and process each tag
         for (String tagName : tags.split(",")) {
             tagName = tagName.trim();
+            tagName = tagName.substring(0, 1).toUpperCase() + tagName.substring(1).toLowerCase();;
 
             // Find the tag in the repository or create a new one
             String finalTagName = tagName;
@@ -162,8 +160,18 @@ public class MealMasterController {
 
 
     @GetMapping("/list")
-    String showRecipeList(Model model) {
-        model.addAttribute("recipes", recipeRepository.findAll());
+    String showRecipeList(Model model, @RequestParam(required = false, defaultValue = "") List<String> tags) {
+        System.out.println(tags);
+        if(!tags.isEmpty()){
+            Set<Recipe> recipes = new HashSet<>();
+            for(String tag: tags){
+                recipes.addAll(recipeRepository.findByTags(new Tag(tag)));
+            }
+            model.addAttribute("recipes", recipes);
+        }else{
+            model.addAttribute("recipes", recipeRepository.findAll());
+        }
+        model.addAttribute("tags", tagRepository.findAll());
         return "list";
     }
 

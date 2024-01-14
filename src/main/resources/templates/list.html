@@ -6,6 +6,21 @@
 <body>
 <nav th:replace="fragments/navbar.html :: navbar"></nav>
 <div class="container-fluid">
+    <div class="row filter-bar">
+        <div class="col">
+            <select class="form-control select2-multiple" name="tags" id="tagSelect" multiple="multiple">
+                <option disabled>Select filter...</option>
+                <option th:each="tag: ${tags}" th:value="${tag.getName()}" th:text="${tag.getName()}"></option>
+            </select>
+        </div>
+        <div class="col">
+            <button id="submit-filter" type="button" class="btn btn-filter">Filter</button>
+        </div>
+        <div class="col">
+
+        </div>
+        <p class="tiny-text" th:text="${recipes.size()} + ' recipes found'"></p>
+    </div>
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-3 list-top-spacer">
         <div class="col" th:each="recipe : ${recipes}">
             <div th:onclick="'window.location.href = \'' + '/recipe/' + ${recipe.id} + '\''" class="card-recipe clickable">
@@ -35,6 +50,34 @@
         </div>
     </div>
 </div>
+
+<script>
+    $(document).ready(function() {
+        $('.select2-multiple').select2();
+
+        $('#submit-filter').click(function() {
+            var selectedTags = $('#tagSelect').val() || [];
+            if (selectedTags.length > 0) {
+                var queryParams = selectedTags.map(tag => 'tags=' + encodeURIComponent(tag)).join('&');
+                var newUrl = window.location.protocol + "//"
+                    + window.location.host
+                    + window.location.pathname
+                    + '?' + queryParams;
+
+                window.location.href = newUrl;
+            } else {
+                //Redirect to normal list in case that filter is empty
+                var newUrl = window.location.protocol + "//"
+                    + window.location.host
+                    + window.location.pathname;
+
+              window.location.href= newUrl;
+            }
+        });
+    });
+
+
+</script>
 
 </body>
 <div th:replace="fragments/footer.html :: footer"></div>

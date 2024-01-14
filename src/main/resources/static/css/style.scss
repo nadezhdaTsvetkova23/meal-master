@@ -6,6 +6,7 @@ $color_green: #03a62c;
 $color_lightgreen: #8fd994;
 $color_red: #ea5557;
 $color_lightred: #eb7181;
+$color_grey: #6c6c6c;
 
 
 //Fonts
@@ -105,8 +106,8 @@ h1, h2, h3, h4{
   background-color: $color_lightblue;
   color: white;
   border-color: $color_lightblue;
-
 }
+
 .btn-recipe:hover {
   background-color: $color_blue;
   border-color: $color_blue;
@@ -155,4 +156,26 @@ h1, h2, h3, h4{
 }
 .badge-margin{
   margin-right: 5px;
+}
+.tiny-text{
+  margin-bottom:0px;
+  margin-top:10px;
+  color: $color_grey;
+}
+.filter-bar{
+  margin-top: 15px;
+}
+.btn-filter{
+  @extend .btn-recipe;
+  padding-left: 50px;
+  padding-right: 50px;
+}
+//Override Select2 Styles
+.select2-selection__choice{
+  color:white !important;
+  border: none !important;
+  background-color: $color_lightblue !important;
+}
+.select2-selection__choice__remove{
+  color: white !important;
 }
