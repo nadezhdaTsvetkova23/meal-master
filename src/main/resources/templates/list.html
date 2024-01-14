@@ -8,8 +8,7 @@
 <div class="container-fluid">
     <div class="row filter-bar">
         <div class="col">
-            <select class="form-control select2-multiple" name="tags" id="tagSelect" multiple="multiple">
-                <option disabled>Select filter...</option>
+            <select class="form-control select2-multiple placeholder-tags" name="tags" id="tagSelect" multiple="multiple">
                 <option th:each="tag: ${tags}" th:value="${tag.getName()}" th:text="${tag.getName()}"></option>
             </select>
         </div>
@@ -39,13 +38,11 @@
             </div>
         </div>
     </div>
-    <div class="row">
+    <div class="row" th:if="${recipes.size() == 0}">
         <div class="col hero">
-            <h2>Nichts passendes Gefunden?</h2>
+            <h2>No Recipes found.</h2>
             <div class="d-flex" aria-label="...">
-                <button onclick="topFunction(); window.location.reload();" type="button" class="btn w-100 btn-recipe">
-                    Neue Rezepte laden
-                </button>
+                <button onclick="window.location.href = '/list'" type="button" class="btn w-100 btn-recipe">Clear filter</button>
             </div>
         </div>
     </div>
@@ -54,6 +51,11 @@
 <script>
     $(document).ready(function() {
         $('.select2-multiple').select2();
+
+        $(".placeholder-tags").select2({
+            placeholder: "Select tags...",
+            allowClear: true
+        });
 
         $('#submit-filter').click(function() {
             var selectedTags = $('#tagSelect').val() || [];

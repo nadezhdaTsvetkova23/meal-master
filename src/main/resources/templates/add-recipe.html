@@ -8,43 +8,34 @@
 <div style="text-align: left !important;" class="container-fluid white">
     <div class="row">
         <div class="col create-recipe">
-            <h2>Neues Rezept Hinzufügen:</h2>
+            <h2>Add new recipe:</h2>
             <form class="row g-3" action="#" th:action="@{/addRecipe}" th:object="${recipe}" method="POST">
                 <div class="col-md-6">
                     <label for="name" class="form-label">Name</label>
                     <input name="name" type="text" class="form-control" id="name" th:field="*{name}" required>
                 </div>
                 <div class="col-md-3">
-                    <label for="string-tags" class="form-label">Tags (mit , getrennt)</label>
+                    <label for="string-tags" class="form-label">Tags (seperated by ,)</label>
                     <input name="string-tags" type="text" class="form-control" id="string-tags">
                 </div>
                 <div class="col-md-3">
-                    <label for="portions" class="form-label">Portionen</label>
+                    <label for="portions" class="form-label">Portions</label>
                     <input name="portions" type="text" class="form-control" id="portions" th:field="*{servings}" required>
                 </div>
                 <div class="col-md-12">
-                    <label for="recipeLink" class="form-label">Link zu Rezept</label>
+                    <label for="recipeLink" class="form-label">Link to Recipe</label>
                     <input name="link" type="text" class="form-control" id="recipeLink">
                 </div>
                 <div class="col-md-12">
-                    <label for="imgLink" class="form-label">Bildlink</label>
+                    <label for="imgLink" class="form-label">Link to Image</label>
                     <input name="imglink" type="text" class="form-control" id="imgLink" th:field="*{imageLink}">
                 </div>
                 <div class="col-md-12">
-                    <label for="instructions" class="form-label">Anleitung</label>
-                    <textarea name="description" style="height: 108px;" type="text" class="form-control" id="instructions" th:field="*{instruction}" required></textarea>
+                    <label for="instructions" class="form-label">Instructions</label>
+                    <textarea name="description" style="height: 108px;" type="text" class="form-control" id="instructions" th:field="*{instruction}"></textarea>
                 </div>
                 <div class="col-12">
-                    <div class="form-check">
-                        <input style="display:none" name="linkonly" value="false">
-                        <input class="form-check-input" name="linkonly" id="linkonly" type="checkbox" value="true">
-                        <label class="form-check-label" for="linkonly" data-toggle="tooltip" data-placement="right" title="Es wird nur ein Link zum Rezept hinzugefügt, ohne Beschreibung und Zutaten.">
-                            Rezept nur verlinken?
-                        </label>
-                    </div>
-                </div>
-                <div class="col-12">
-                    <button class="btn btn-recipe" type="submit">Nächster Schritt</button>
+                    <button class="btn btn-recipe" type="submit">Next step</button>
                 </div>
 
             </form>

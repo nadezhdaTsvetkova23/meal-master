@@ -16,35 +16,25 @@
           <input name="name" type="text" class="form-control" id="name" th:field="*{name}" th:value="${recipe.getName()}" required>
         </div>
         <div class="col-md-3">
-          <label for="string-tags" class="form-label">Tags (mit , getrennt)</label>
+          <label for="string-tags" class="form-label">Tags (seperated by ,)</label>
           <input name="string-tags" type="text" class="form-control" id="string-tags"  aria-describedby="inputGroupPrepend2" th:value="${recipe.getTagsString()}">
         </div>
         <div class="col-md-3">
-          <label for="portions" class="form-label">Portionen</label>
+          <label for="portions" class="form-label">Portions</label>
           <input name="portions" type="text" class="form-control" id="portions" aria-describedby="inputGroupPrepend2" th:field="*{servings}" th:value="${recipe.getServings()}" required>
         </div>
         <div class="col-md-12">
-          <label for="recipeLink" class="form-label">Link zu Rezept</label>
+          <label for="recipeLink" class="form-label">Link to Recipe</label>
           <input name="link" type="text" class="form-control" id="recipeLink">
         </div>
         <div class="col-md-12">
-          <label for="imgLink" class="form-label">Bildlink</label>
+          <label for="imgLink" class="form-label">Link to Image</label>
           <input name="imglink" type="text" class="form-control" id="imgLink" th:field="*{imageLink}" th:value="${recipe.getImageLink()}">
         </div>
         <div class="col-md-12">
-          <label for="instructions" class="form-label">Anleitung</label>
-          <textarea name="description" style="height: 108px;" type="text" class="form-control" id="instructions" th:field="*{instruction}" required th:value="${recipe.getInstruction()}"></textarea>
+          <label for="instructions" class="form-label">Instructions</label>
+          <textarea name="description" style="height: 108px;" type="text" class="form-control" id="instructions" th:field="*{instruction}" th:value="${recipe.getInstruction()}"></textarea>
         </div>
-        <div class="col-12">
-          <div class="form-check">
-            <input style="display:none" name="linkonly" value="false">
-            <input class="form-check-input" name="linkonly" id="linkonly" type="checkbox" value="true">
-            <label class="form-check-label" for="linkonly" data-toggle="tooltip" data-placement="right" title="Es wird nur ein Link zum Rezept hinzugefügt, ohne Beschreibung und Zutaten.">
-              Rezept nur verlinken?
-            </label>
-          </div>
-        </div>
-
         <div class="col-12">
           <button class="btn btn-recipe" type="submit">Save Recipe</button><a class="btn btn-delete" th:href="'/deleteRecipe/'+${recipe.id}">Delete Recipe</a>
         </div>

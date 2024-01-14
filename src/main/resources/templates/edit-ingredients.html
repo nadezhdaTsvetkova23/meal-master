@@ -9,45 +9,45 @@
 
   <div class="row">
     <div class="col create-recipe">
-      <h2>Edit ingredients for <span th:text="${recipe.getName()}"></span>:</h2><a style="margin-left: 0px;margin-bottom: 40px;margin-top:40px;"class="btn btn-delete" th:href="'/recipe/' + ${recipe.getId()}">Bearbeitung abschließen</a>
+      <h2>Edit ingredients for <span th:text="${recipe.getName()}"></span>:</h2><a style="margin-left: 0px;margin-bottom: 40px;margin-top:40px;"class="btn btn-delete" th:href="'/recipe/' + ${recipe.getId()}">Back to recipe</a>
       <form class="row g-3" th:each="ingredient : ${ingredients}">
         <div class="col-md-2">
-          <label class="form-label">Menge</label>
+          <label class="form-label">Amount</label>
           <input type="text" class="form-control" th:value="${ingredient.getAmount()}" required disabled>
         </div>
         <div class="col-md-3">
-          <label class="form-label">Einheit</label>
+          <label class="form-label">Unit</label>
           <select class="form-select" disabled>
             <option th:text="${ingredient.getUnit().getName()}"></option>
           </select></div>
         <div class="col-md-5">
-          <label class="form-label">Zutat</label>
+          <label class="form-label">Ingredient</label>
           <input type="text" class="form-control" th:value="${ingredient.getIngredient().getName()}" required disabled>
         </div>
         <div class="col-2">
           <label style="height:18px"class="form-label"></label>
-          <a style="margin-left: 0px;"class="btn btn-delete w-100" th:href="'/deleteIngredient/' + ${ingredient.getId()}">Löschen</a>
+          <a style="margin-left: 0px;"class="btn btn-delete w-100" th:href="'/deleteIngredient/' + ${ingredient.getId()}">Delete</a>
         </div>
       </form>
       <form class="row g-3" id="addIngredient">
         <input id="recipe" type="text" style="display: none" th:value="${recipe.getId()}">
         <div class="col-md-2">
-          <label class="form-label">Menge</label>
+          <label class="form-label">Amount</label>
           <input id="amount" name="amount" type="text" class="form-control" required>
         </div>
         <div class="col-md-3">
-          <label class="form-label">Einheit</label>
+          <label class="form-label">Unit</label>
           <select id="unit" name="unit" class="form-select">
-            <option disabled selected>Wählen...</option>
-            <option th:each="unit : ${units}" th:text="${unit.getName()}">Wählen...</option>
+            <option disabled selected>Select...</option>
+            <option th:each="unit : ${units}" th:text="${unit.getName()}">Select...</option>
           </select></div>
         <div class="col-md-5">
-          <label class="form-label">Zutat</label>
+          <label class="form-label">Ingredient</label>
           <input name="ingredient" id="ingredient"type="text" class="form-control" required>
         </div>
         <div class="col-2">
           <label style="height:18px"class="form-label"></label>
-          <button id="btn-submit" class="btn btn-recipe w-100" type="submit">Hinzufügen</button>
+          <button id="btn-submit" class="btn btn-recipe w-100" type="submit">Add</button>
         </div>
       </form>
     </div>
