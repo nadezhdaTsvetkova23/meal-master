@@ -83,6 +83,10 @@ public class Recipe {
         this.tags = tags;
     }
 
+    public Set<RecipeIngredient> getRecipeIngredients(){
+        return recipeIngredients;
+    }
+
     public String getTagsString(){
         StringBuilder returnString = new StringBuilder();
         for(Tag tag: tags){

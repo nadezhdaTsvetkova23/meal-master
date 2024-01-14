@@ -19,8 +19,7 @@
       <div class="card-recipe-content">
         <h1>Zutaten für <span th:text="${recipe.getServings()}"></span> Portionen:</h1>
         <div class="recipe-ingredients">
-
-          <p> 4 g sugar</p>
+          <p th:each="ingredient : ${recipe.getRecipeIngredients()}" th:text="${ingredient.getAmount()}+' '+${ingredient.getUnit().getAbbreviation()}+' '+ ${ingredient.getIngredient().getName()}"></p>
         </div>
       </div>
     </div>
@@ -31,7 +30,7 @@
         <h1 th:text="${recipe.getName()}"></h1>
         <span class="badge bg-dark badge-margin" th:each="tag : ${recipe.tags}" th:style="'background-color: #' + ${tag.color} + ' !important'" th:text="${tag.name}">Tag Name</span>
         <p th:text="${recipe.getInstruction()}" class="recipe-instructions"></p>
-        <button th:onclick="'window.location.href = \'' + '/editRecipe/' + ${recipe.id} + '\''" type="button" class="btn btn-recipe float-right">Rezept bearbeiten</button><button class="btn btn-edit" onclick="window.location.href = '/edit';">Zutaten bearbeiten</button>
+        <button th:onclick="'window.location.href = \'' + '/editRecipe/' + ${recipe.id} + '\''" type="button" class="btn btn-recipe float-right">Rezept bearbeiten</button><button class="btn btn-edit" th:onclick="'window.location.href = \'' + '/editIngredients/' + ${recipe.id} + '\''">Zutaten bearbeiten</button>
       </div>
     </div>
   </div>

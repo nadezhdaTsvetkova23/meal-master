@@ -1,16 +1,13 @@
 package at.univie.mealmaster;
 
-import at.univie.mealmaster.model.Ingredient;
-import at.univie.mealmaster.model.Recipe;
-import at.univie.mealmaster.model.Tag;
-import at.univie.mealmaster.repository.IngredientRepository;
-import at.univie.mealmaster.repository.RecipeRepository;
-import at.univie.mealmaster.repository.TagRepository;
+import at.univie.mealmaster.model.*;
+import at.univie.mealmaster.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -21,7 +18,12 @@ public class MealMasterController {
 
     @Autowired
     private RecipeRepository recipeRepository;
+    @Autowired
     private IngredientRepository ingredientRepository;
+    @Autowired
+    private UnitRepository unitRepository;
+    @Autowired
+    private RecipeIngredientRepository recipeIngredientRepository;
 
     @Autowired
     private TagRepository tagRepository;
@@ -65,13 +67,45 @@ public class MealMasterController {
         // Save the recipe
         recipeRepository.save(recipe);
 
-        return "redirect:/recipe/" + recipe.getId();
+        return "redirect:/editIngredients/" + recipe.getId();
     }
 
-    @PostMapping("/addIngredient")
-    String showIngredientsToChooseFrom(@ModelAttribute Ingredient ingredient){
+    @GetMapping("editIngredients/{id}")
+    String showEditIngredientsForm(@PathVariable("id") long id, Model model){
+        Recipe recipe = recipeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid Id:" + id));
+
+        ArrayList<RecipeIngredient> recipeIngredients = recipeIngredientRepository.findByRecipe(recipe);
+
+
+        model.addAttribute("ingredients", recipeIngredients);
+        model.addAttribute("recipe", recipe);
+        model.addAttribute("units", unitRepository.findAll());
+
+        return "edit-ingredients";
+    }
+
+    @PostMapping("addIngredient")
+    String submitAddIngredient(@RequestParam("recipe") Long recipeString, @RequestParam("ingredient") String ingredientString, @RequestParam("unit") String unitString, @RequestParam("amount") Double amountString){
+
+        Ingredient ingredient = new Ingredient();
+        ingredient.setName(ingredientString);
         ingredientRepository.save(ingredient);
-        return "redirect:/recipe/" + ingredient.getId();
+
+        RecipeIngredient recipeIngredient = new RecipeIngredient();
+
+        recipeIngredient.setIngredient(ingredient);
+
+        Recipe recipe = recipeRepository.findById(recipeString).orElseThrow(() -> new IllegalArgumentException("Invalid Id:" + recipeString));
+
+        recipeIngredient.setRecipe(recipe);
+        recipeIngredient.setAmount(amountString);
+
+        Unit unit = unitRepository.findByName(unitString).orElseThrow(() -> new IllegalArgumentException("Invalid Id:" + unitString));;
+        recipeIngredient.setUnit(unit);
+
+        recipeIngredientRepository.save(recipeIngredient);
+
+        return "redirect:/";
     }
 
     @GetMapping("/editRecipe/{id}")
@@ -110,6 +144,20 @@ public class MealMasterController {
         Recipe recipe = recipeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid Id:" + id));
         recipeRepository.delete(recipe);
         return "redirect:/";
+    }
+
+    @GetMapping("/deleteIngredient/{recipe-ingredient-id}")
+    String deleteIngredientFromRecipe(@PathVariable("recipe-ingredient-id") long recipeIngredientID) {
+        RecipeIngredient recipeIngredient = new RecipeIngredient();
+        try{
+            recipeIngredient = recipeIngredientRepository.findById(recipeIngredientID).orElseThrow(() -> new IllegalArgumentException("Invalid Id:" + recipeIngredientID));
+
+            recipeIngredientRepository.delete(recipeIngredient);
+            return "redirect:/editIngredients/" + recipeIngredient.getRecipe().getId();
+        }catch(IllegalArgumentException e){
+            System.out.println(e.getMessage());
+            return "redirect:/";
+        }
     }
 
 
