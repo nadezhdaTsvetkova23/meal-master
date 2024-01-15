@@ -4,19 +4,54 @@
 
 <body>
 <nav th:replace="fragments/navbar.html :: navbar"></nav>
-<div class="container-fluid white">
-    <div class="row">
-        <div class="col hero">
-            <h2>Find Recipes Now!</h2>
-            <p>Search directly for your favorite recipe:</p>
-            <div style="padding-top: 30px;" class="row gx-5">
-                <div class="col">
-                    <p>What recipe are you looking for?</p>
-                    <form class="d-flex" action="/search" method="GET">
-                        <input name="name" class="form-control me-2" type="search" placeholder="e.g., Spaghetti Carbonara" aria-label="Search">
-                        <button class="btn btn-recipe" type="submit">Search</button>
-                    </form>
+<div>
+    <div class="container-fluid white">
+        <div class="row">
+            <div class="col hero">
+                <h2>Find Recipes Now!</h2>
+                <p>Search directly for your favorite recipe:</p>
+                <div style="padding-top: 30px;" class="row gx-5">
+                    <div class="col">
+                        <p>What recipe are you looking for?</p>
+                        <form class="d-flex" action="/search" method="GET">
+                            <input name="name" class="form-control me-2" type="search"
+                                   placeholder="e.g., Spaghetti Carbonara" aria-label="Search">
+                            <button class="btn btn-recipe" type="submit">Search</button>
+                        </form>
+                    </div>
                 </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-3 list-top-spacer">
+        <div class="col" th:each="recipe : ${recipes}">
+            <div th:onclick="'window.location.href = \'' + '/recipe/' + ${recipe.id} + '\''"
+                 class="card-recipe clickable">
+                <div th:if="${recipe.getImageLink() != ''}">
+                    <img th:src="${recipe.getImageLink()}" class="recipe-img-overview" alt="image of food">
+                </div>
+                <div th:unless="${recipe.getImageLink() != ''}">
+                    <img th:src="@{/img/placeholder.png}" class="recipe-img-overview" alt="placeholder">
+                </div>
+                <div class="card-recipe-content">
+                    <a th:href="'/editRecipe/' + ${recipe.getId()}"><i class="grid-settings bi bi-gear-fill"></i></a>
+                    <h5 class="card-title" th:text="${recipe.getName()}"></h5>
+                    <p class="card-text"><span th:text="${recipe.getServings()}"></span> Portions</p>
+                    <span class="badge bg-dark badge-margin" th:each="tag : ${recipe.tags}"
+                          th:style="'background-color: #' + ${tag.color} + ' !important'"
+                          th:text="${tag.name}">Tag Name</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" th:if="${recipes.size() == 0}">
+        <div class="col hero">
+            <h2>No Recipes found.</h2>
+            <div class="d-flex" aria-label="...">
+                <button onclick="window.location.href = '/list'" type="button" class="btn w-100 btn-recipe">Clear
+                    filter
+                </button>
             </div>
         </div>
     </div>
