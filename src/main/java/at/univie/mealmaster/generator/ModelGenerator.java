@@ -98,6 +98,8 @@ public class ModelGenerator {
             int randomNumber = 3 + random.nextInt(5); // Random Number between 3 and 7
             for(int j = 0; j < randomNumber; j++){
                 randomIngredients.add(ingredients.get(random.nextInt(ingredients.size())));
+            }
+            for(int j = 0; j< 3; j++){
                 recipe.addTag(tags.get(random.nextInt(tags.size())));
             }
             recipe.setName( cookingForms.get(random.nextInt(cookingForms.size())) +" "+randomIngredients.get(0).getName() + " with " +cookingForms.get(random.nextInt(cookingForms.size()))+" "+ randomIngredients.get(1).getName());
