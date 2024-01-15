@@ -32,7 +32,7 @@ public class MealMasterController {
     String showIndexPage() {
         //Checks if generatedContent.txt contains true and forwards to index. If it does not exist it forwards to setup page
         boolean contentGenerated = new CheckIfContentGenerated().checkFile();
-        if (!contentGenerated) { //change the condition later
+        if (contentGenerated) {
             return "index";
         } else {
             return "setup";
