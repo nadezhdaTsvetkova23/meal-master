@@ -89,7 +89,7 @@ h1, h2, h3, h4 {
   cursor: pointer;
 }
 
-.card-recipe-content {
+.card-recipe-content, .card-report-content {
   padding: 10px;
 }
 
@@ -195,6 +195,23 @@ h1, h2, h3, h4 {
 }
 .full-recipe-width {
   width: 75%;
+}
+
+.highlight {
+  color: #6dccf2 !important;
+}
+
+ol {
+  font-size: 2rem;
+  font-family: "Amatic SC", cursive;
+}
+
+li::marker {
+  color: #6dccf2;
+}
+
+.card-report-content {
+  padding: 20px;
 }
 
 .select2-selection__choice {

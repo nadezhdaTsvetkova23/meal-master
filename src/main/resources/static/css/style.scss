@@ -193,6 +193,20 @@ h1, h2, h3, h4{
   width: 75%;
 }
 
+.highlight{
+  color: $color_lightblue !important;
+}
+ol{
+  font-size: 2rem;
+  font-family: "Amatic SC", cursive;
+}
+li::marker{
+  color: $color_lightblue;
+}
+.card-report-content{
+  @extend .card-recipe-content;
+  padding:20px;
+}
 
 //Override Select2 Styles
 .select2-selection__choice{

@@ -8,7 +8,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
-import java.util.stream.Collectors;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Controller
 public class MealMasterController {
@@ -87,8 +88,12 @@ public class MealMasterController {
     String submitAddIngredient(@RequestParam("recipe") Long recipeString, @RequestParam("ingredient") String ingredientString, @RequestParam("unit") String unitString, @RequestParam("amount") Double amountString){
 
         Ingredient ingredient = new Ingredient();
-        ingredient.setName(ingredientString);
-        ingredientRepository.save(ingredient);
+        try{
+           ingredient =  ingredientRepository.findByName(ingredientString).orElseThrow(() -> new IllegalArgumentException("Invalid ingredient:" + ingredientString));
+        } catch(IllegalArgumentException e){
+            ingredient.setName(ingredientString);
+            ingredientRepository.save(ingredient);
+        }
 
         RecipeIngredient recipeIngredient = new RecipeIngredient();
 
@@ -202,6 +207,68 @@ public class MealMasterController {
         model.addAttribute("recipe", recipe);
         model.addAttribute("feedbacks", feedbacks);
         return "show-recipe";
+    }
+
+    @GetMapping("/report/tag")
+    String getTopIngredientForMostCommonTag(Model model){
+
+
+        ArrayList<Tag> tags = new ArrayList<>(tagRepository.findAll());
+
+        HashMap<Tag, Integer> tagOccurance = new HashMap<>();
+
+
+        for(Tag tag: tags){
+            tagOccurance.put(tag, tag.getRecipes().size());
+        }
+
+        AtomicReference<Tag> topTag = new AtomicReference<>(new Tag());
+        AtomicInteger topTagOccurrence = new AtomicInteger();
+        tagOccurance.forEach((key, value) -> {
+            if(topTagOccurrence.get() < value){
+                topTag.set(key);
+                topTagOccurrence.set(value);
+            }
+        });
+
+        model.addAttribute("tag", topTag.get());
+        model.addAttribute("tagOccurrence", topTagOccurrence);
+
+        HashMap<Ingredient, Integer> ingredientOccurrence = new HashMap<>();
+        ArrayList<Recipe> recipesWithTopTag = recipeRepository.findByTags(topTag.get());
+
+        model.addAttribute("recipes", recipesWithTopTag);
+
+        for(Recipe recipe: recipesWithTopTag){
+            for(RecipeIngredient ri : recipeIngredientRepository.findByRecipe(recipe)){
+                if(ingredientOccurrence.get(ri.getIngredient()) != null){
+                    ingredientOccurrence.put(ri.getIngredient(), ingredientOccurrence.get(ri.getIngredient())+1);
+                }else{
+                    ingredientOccurrence.put(ri.getIngredient(), 1);
+                }
+            }
+        }
+
+
+        //Add HashMap to list in order to sort it
+        List<Map.Entry<Ingredient, Integer>> list = new ArrayList<>(ingredientOccurrence.entrySet());
+
+        //Sort
+        list.sort((o1, o2) -> o2.getValue().compareTo(o1.getValue()));
+
+        //Just get the top 5
+        int i = 0;
+        List<Ingredient> sortedAndFilteredIngredients = new ArrayList<>();
+        for(Map.Entry<Ingredient, Integer> entry: list){
+            if(i < 5){
+                sortedAndFilteredIngredients.add(entry.getKey());
+            }
+            i++;
+        }
+
+        model.addAttribute("ingredients", sortedAndFilteredIngredients);
+
+        return "report-01";
     }
 
     @GetMapping("/generateData")
