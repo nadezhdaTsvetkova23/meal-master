@@ -31,6 +31,16 @@
         <span class="badge bg-dark badge-margin" th:each="tag : ${recipe.tags}" th:style="'background-color: #' + ${tag.color} + ' !important'" th:text="${tag.name}">Tag Name</span>
         <p th:text="${recipe.getInstruction()}" class="recipe-instructions"></p>
         <button th:onclick="'window.location.href = \'' + '/editRecipe/' + ${recipe.id} + '\''" type="button" class="btn btn-recipe float-right">Edit Recipe</button><button class="btn btn-edit" th:onclick="'window.location.href = \'' + '/editIngredients/' + ${recipe.id} + '\''">Edit Ingredients</button>
+        <button class="btn btn-edit" th:onclick="'window.location.href = \'' + '/addFeedback/' + ${recipe.id} + '\''">Add Feedback</button>
+      </div>
+      <div class="feedback-section">
+        <h3>Feedback</h3>
+        <div th:each="feedback : ${feedbacks}">
+          <div class="feedback">
+            <p><strong>Score:</strong> <span th:text="${feedback.score}"></span></p>
+            <p><strong>Comment:</strong> <span th:text="${feedback.comment}"></span></p>
+          </div>
+        </div>
       </div>
     </div>
   </div>

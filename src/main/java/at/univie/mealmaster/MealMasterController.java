@@ -21,9 +21,10 @@ public class MealMasterController {
     private UnitRepository unitRepository;
     @Autowired
     private RecipeIngredientRepository recipeIngredientRepository;
-
     @Autowired
     private TagRepository tagRepository;
+    @Autowired
+    private FeedbackRepository feedbackRepository;
 
     @GetMapping("/")
     String showIndexPage() {
@@ -106,6 +107,25 @@ public class MealMasterController {
         return "redirect:/";
     }
 
+    @GetMapping("/addFeedback/{recipeId}")
+    String showAddFeedbackForm(@PathVariable("recipeId") long recipeId, Model model) {
+        Recipe recipe = recipeRepository.findById(recipeId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid Recipe Id:" + recipeId));
+        model.addAttribute("recipe", recipe);
+        return "add-feedback";
+    }
+
+    @PostMapping("/addFeedback/{recipeId}")
+    String addFeedback(@PathVariable("recipeId") long recipeId, @ModelAttribute Feedback feedback) {
+        Recipe recipe = recipeRepository.findById(recipeId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid Recipe Id:" + recipeId));
+        feedback.setRecipe(recipe);
+        feedbackRepository.save(feedback);
+        return "redirect:/recipe/" + recipeId;
+    }
+
+
+
     @GetMapping("/editRecipe/{id}")
     String showEditRecipeForm(@PathVariable("id") long id, Model model) {
         Recipe recipe = recipeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid Id:" + id));
@@ -178,7 +198,9 @@ public class MealMasterController {
     @GetMapping("/recipe/{id}")
     String showRecipe(@PathVariable("id") long id, Model model) {
         Recipe recipe = recipeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid Id:" + id));
+        List<Feedback> feedbacks = feedbackRepository.findByRecipeId(id);
         model.addAttribute("recipe", recipe);
+        model.addAttribute("feedbacks", feedbacks);
         return "show-recipe";
     }
 

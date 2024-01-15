@@ -1,4 +1,3 @@
-/*
 package at.univie.mealmaster.generator;
 
 import at.univie.mealmaster.model.*;
@@ -15,6 +14,7 @@ import java.util.stream.Collectors;
 import java.util.Random;
 
 public class GenerateData {
+/*
 
     //TURN OFF TO WRITE TO DATABASE
     static boolean safe = false;
@@ -270,6 +270,6 @@ public class GenerateData {
 
             System.out.println("Feedback added: " + (numberOfFeedbackEntriesToGenerate - feedbackErrors) + ", " + feedbackErrors + " Errors appeared.");
         }
+*/
 
 }
-*/

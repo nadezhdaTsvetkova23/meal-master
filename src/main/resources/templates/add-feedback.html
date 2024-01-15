@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:insert="fragments/head.html :: head"></head>
+<body>
+<nav th:replace="fragments/navbar.html :: navbar"></nav>
+<div class="container-fluid white">
+    <div class="row">
+        <div class="col">
+            <h2 th:text="${recipe.name} + ' - Add Feedback'"></h2>
+            <form class="row g-3" th:action="@{'/addFeedback/' + ${recipe.id}}" method="POST">
+                <input type="hidden" name="recipeId" th:value="${recipe.id}"/>
+                <div class="col-md-6">
+                    <label for="score" class="form-label">Rating</label>
+                    <select name="score" class="form-select" id="score" required>
+                        <option value="" selected>Select Rating...</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+                <div class="col-md-12">
+                    <label for="comment" class="form-label">Comment</label>
+                    <textarea name="comment" style="height: 108px;" class="form-control" id="comment" required></textarea>
+                </div>
+                <div class="col-12">
+                    <button class="btn btn-recipe" type="submit">Submit Feedback</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+</body>
+<div th:replace="fragments/footer.html :: footer"></div>
+</html>
