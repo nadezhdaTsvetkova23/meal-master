@@ -6,6 +6,8 @@ $color_green: #03a62c;
 $color_lightgreen: #8fd994;
 $color_red: #ea5557;
 $color_lightred: #eb7181;
+$color_orange: #ff8346;
+$color_lightorange: #ff9e76;
 $color_grey: #6c6c6c;
 
 
@@ -116,6 +118,17 @@ h1, h2, h3, h4{
   @extend .btn-recipe;
   margin-top: 20px;
 }
+.btn-feedback{
+  background-color: $color_lightorange;
+  color: white;
+  border-color: $color_lightorange;
+}
+.btn-feedback:hover{
+  background-color: $color_orange;
+  color: white;
+  border-color: $color_orange;
+}
+
 
 .btn-delete{
   background-color: $color_lightred;
