@@ -20,6 +20,12 @@ public class Unit {
     @OneToMany(mappedBy = "unit")
     private Set<RecipeIngredient> recipeIngredients;
 
+    public Unit(){}
+
+    public Unit(String name, String abbreviation){
+        setName(name);
+        setAbbreviation(abbreviation);
+    }
     public Long getId() {
         return id;
     }

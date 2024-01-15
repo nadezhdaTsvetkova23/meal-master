@@ -16,21 +16,20 @@ public class CheckIfContentGenerated {
         }
     }
     public boolean checkFile(){
+        try {
+            raf.seek(0);
+            boolean check = false;
+            try{
+                check = raf.readBoolean();
+            } catch (EOFException e){
+                return false;
+            }
+           return true;
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
         return false;
-//        try {
-//            raf.seek(0);
-//            boolean check = false;
-//            try{
-//                check = raf.readBoolean();
-//            } catch (EOFException e){
-//                return false;
-//            }
-//           return true;
-//
-//        } catch (IOException ex) {
-//            ex.printStackTrace();
-//        }
-//        return false;
     }
     public void writeTrueToFile(){
         try{

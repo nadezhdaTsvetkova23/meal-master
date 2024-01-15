@@ -1,4 +1,5 @@
-package at.univie.mealmaster.generator;/*
+/*
+package at.univie.mealmaster.generator;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 
@@ -127,5 +128,4 @@ public class Generator {
         }
     }
 }
-
 */

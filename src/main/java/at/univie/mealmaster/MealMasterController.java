@@ -1,5 +1,6 @@
 package at.univie.mealmaster;
 
+import at.univie.mealmaster.generator.ModelGenerator;
 import at.univie.mealmaster.model.*;
 import at.univie.mealmaster.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,14 @@ public class MealMasterController {
         } else {
             return "setup";
         }
+    }
+
+    @GetMapping("/search")
+    public String searchRecipes(@RequestParam String name, Model model) {
+        // Logic to get recipes based on the search query
+        List<Recipe> searchResults = recipeRepository.findByNameStartingWith(name);
+        model.addAttribute("recipes", searchResults);
+        return "search-results";
     }
 
     @GetMapping("/addRecipe")
@@ -129,8 +138,6 @@ public class MealMasterController {
         return "redirect:/recipe/" + recipeId;
     }
 
-
-
     @GetMapping("/editRecipe/{id}")
     String showEditRecipeForm(@PathVariable("id") long id, Model model) {
         Recipe recipe = recipeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid Id:" + id));
@@ -209,6 +216,57 @@ public class MealMasterController {
         return "show-recipe";
     }
 
+
+    @GetMapping("/deleteFeedback/{feedbackId}")
+    String deleteFeedback(@PathVariable("feedbackId") long feedbackId) {
+        Feedback feedback = feedbackRepository.findById(feedbackId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid Feedback Id:" + feedbackId));
+        long recipeId = feedback.getRecipe().getId();
+        feedbackRepository.delete(feedback);
+        return "redirect:/recipe/" + recipeId;
+    }
+
+    @GetMapping("/editFeedback/{feedbackId}")
+    String showEditFeedbackForm(@PathVariable("feedbackId") long feedbackId, Model model) {
+        Feedback feedback = feedbackRepository.findById(feedbackId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid Feedback Id:" + feedbackId));
+
+        Recipe recipe = feedback.getRecipe();
+        if (recipe == null) {
+            throw new IllegalArgumentException("Recipe not found for feedback Id:" + feedbackId);
+        }
+
+        model.addAttribute("feedback", feedback);
+        model.addAttribute("recipe", recipe);
+        return "edit-feedback";
+    }
+
+
+  /*  @PostMapping("/editFeedback/{recipeId}")
+    public String editFeedback(@PathVariable("recipeId") long recipeId, @ModelAttribute Feedback feedback, RedirectAttributes redirectAttributes) {
+        Recipe recipe = recipeRepository.findById(recipeId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid Recipe Id:" + recipeId));
+
+        feedback.setRecipe(recipe);
+        feedbackRepository.save(feedback);
+        return "redirect:/recipe/" + recipeId;
+    }*/
+
+    @PostMapping("/editFeedback/{feedbackId}")
+    public String editFeedback(@PathVariable("feedbackId") long feedbackId, @ModelAttribute Feedback updatedFeedback) {
+        Feedback existingFeedback = feedbackRepository.findById(feedbackId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid Feedback Id:" + feedbackId));
+
+        existingFeedback.setUserName(updatedFeedback.getUserName());
+        existingFeedback.setScore(updatedFeedback.getScore());
+        existingFeedback.setComment(updatedFeedback.getComment());
+        feedbackRepository.save(existingFeedback);
+
+        return "redirect:/recipe/" + existingFeedback.getRecipe().getId();
+    }
+
+
+
     @GetMapping("/report/tag")
     String getTopIngredientForMostCommonTag(Model model){
 
@@ -273,8 +331,15 @@ public class MealMasterController {
 
     @GetMapping("/generateData")
     String generateData() {
+        ModelGenerator mg = new ModelGenerator();
 
-        //add generateData()
+        unitRepository.saveAll(mg.getUnits());
+        tagRepository.saveAll(mg.getTags());
+        ingredientRepository.saveAll(mg.getIngredients());
+        recipeRepository.saveAll(mg.getRecipes());
+        recipeIngredientRepository.saveAll(mg.getRecipeIngredients());
+
+        new CheckIfContentGenerated().writeTrueToFile();
         return "redirect:/";
     }
 }

@@ -192,6 +192,67 @@ h1, h2, h3, h4{
 .full-recipe-width{
   width: 75%;
 }
+.feedback {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.feedback-stars {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.yellow-star {
+  color: gold;
+}
+
+.icon-link {
+  margin-left: 10px;
+}
+
+.bi-star-fill.yellow-star {
+  color: gold;
+  font-size: 24px;
+}
+
+.bi-star {
+  font-size: 24px;
+}
+.feedback-header {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+}
+
+.feedback-user {
+  margin-right: 10px;
+  margin-bottom: 20px;
+}
+
+.feedback-stars .bi {
+  margin-right: 5px;
+}
+
+.feedback-comment {
+  margin-top: 20px;
+}
+
+.feedback-icons {
+  margin-top: 10px;
+}
+
+.icon-link .bi-gear-fill, .icon-link .bi-trash-fill {
+  color: $color_lightblue;
+  font-size: 24px;
+}
+
+.icon-link:hover .bi-gear-fill, .icon-link:hover .bi-trash-fill {
+  color: darken($color_lightblue, 10%);
+}
+
+
 
 .highlight{
   color: $color_lightblue !important;
