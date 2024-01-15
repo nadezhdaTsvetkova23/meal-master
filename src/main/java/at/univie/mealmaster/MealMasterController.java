@@ -31,11 +31,19 @@ public class MealMasterController {
     String showIndexPage() {
         //Checks if generatedContent.txt contains true and forwards to index. If it does not exist it forwards to setup page
         boolean contentGenerated = new CheckIfContentGenerated().checkFile();
-        if (contentGenerated) {
+        if (!contentGenerated) { //change the condition later
             return "index";
         } else {
             return "setup";
         }
+    }
+
+    @GetMapping("/search")
+    public String searchRecipes(@RequestParam String name, Model model) {
+        // Logic to get recipes based on the search query
+        List<Recipe> searchResults = recipeRepository.findByNameStartingWith(name);
+        model.addAttribute("recipes", searchResults);
+        return "search-results";
     }
 
     @GetMapping("/addRecipe")

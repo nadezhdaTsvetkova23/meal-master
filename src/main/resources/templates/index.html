@@ -1,88 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
-<head th:insert="fragments/head.html :: head">
-</head>
+<head th:insert="fragments/head.html :: head"></head>
 
 <body>
 <nav th:replace="fragments/navbar.html :: navbar"></nav>
 <div class="container-fluid white">
     <div class="row">
         <div class="col hero">
-            <h2>Jetzt Rezepte finden!</h2>
-            <p>Anzahl der benötigten Rezepte eingeben oder direkt nach deinem Lieblingsrezept suchen:</p>
+            <h2>Find Recipes Now!</h2>
+            <p>Search directly for your favorite recipe:</p>
             <div style="padding-top: 30px;" class="row gx-5">
                 <div class="col">
-                    <p>Wie viele Gerichte benötigst du?</p>
-                    <div class="btn-group d-flex" role="group" aria-label="...">
-                        <button onclick="window.location.href = '/generate.php?amount=4';" type="button" class="btn w-100 btn-recipe">4</button>
-                        <button onclick="window.location.href = '/generate.php?amount=6';" type="button" class="btn w-100 btn-recipe">6</button>
-                        <button onclick="window.location.href = '/generate.php?amount=8';" type="button" class="btn w-100 btn-recipe">8</button>
-                        <button onclick="window.location.href = '/generate.php?amount=10';" type="button" class="btn w-100 btn-recipe">10</button>
-                    </div>
-                </div>
-                <div class="col">
-                    <p>Welches Rezept suchst du?</p>
-                    <form class="d-flex" action="/recipe.php" method="GET">
-                        <input name="name" class="form-control me-2" type="search" placeholder="z.B. Spaghetti Carbonara" aria-label="Search">
-                        <button class="btn btn-recipe" type="submit">Suchen</button>
+                    <p>What recipe are you looking for?</p>
+                    <form class="d-flex" action="/search" method="GET">
+                        <input name="name" class="form-control me-2" type="search" placeholder="e.g., Spaghetti Carbonara" aria-label="Search">
+                        <button class="btn btn-recipe" type="submit">Search</button>
                     </form>
                 </div>
             </div>
-        </div>
-    </div>
-</div>
-<h2 style="margin-top: 20px">Unsere Rezepte des Tages:</h2>
-<div class="container-fluid">
-    <div class="row">
-        <?php
-            $recipe1 = $db->getRecipe("Cowboy Stew");
-        $recipe1_tags = $db->getTags($recipe1['name']);
-        ?>
-        <div class="col card-recipe-left clickable" onclick="window.location.href = '/recipe.php?name=<?php echo $recipe1['name'];?>'">
-            <img src="<?php echo $recipe1['bildlink']; ?>" class="recipe-img-overview" alt="...">
-            <div class="card-recipe-content">
-                <h5 class="card-title"><?php echo $recipe1['name']; ?></h5>
-                <p class="card-text"><?php echo $recipe1['portionen']; ?> Portionen</p>
-                <?php
-                    foreach($recipe1_tags as &$tags){
-                        echo '<span class="badge bg-dark"style="background-color: #'.$tags['farbe'].' !important;">'. $tags['tag'].'</span> ';
-                }
-
-                ?>
-            </div>
-        </div>
-        <?php
-            $recipe2 = $db->getRecipe("Cabanossi Couscous");
-        $recipe2_tags = $db->getTags($recipe2['name']);
-        ?>
-        <div class="col card-recipe clickable" onclick="window.location.href = '/recipe.php?name=<?php echo $recipe2['name'];?>'">
-            <img src="<?php echo $recipe2['bildlink']; ?>" class="recipe-img-overview" alt="...">
-            <div class="card-recipe-content">
-                <h5 class="card-title"><?php echo $recipe2['name']; ?></h5>
-                <p class="card-text"><?php echo $recipe2['portionen']; ?> Portionen</p>
-                <?php
-                    foreach($recipe2_tags as &$tags){
-                        echo '<span class="badge bg-dark"style="background-color: #'.$tags['farbe'].' !important;">'. $tags['tag'].'</span> ';
-                }
-
-                ?></div>
-        </div>
-        <?php
-            $recipe3 = $db->getRecipe("Fettuccine Alfredo");
-        $recipe3_tags = $db->getTags($recipe3['name']);
-        ?>
-        <div class="col card-recipe" onclick="window.location.href = '/recipe.php?name=<?php echo $recipe3['name'];?>'">
-
-            <img src="<?php echo $recipe3['bildlink']; ?>" class="recipe-img-overview" alt="...">
-            <div class="card-recipe-content">
-                <h5 class="card-title"><?php echo $recipe3['name']; ?></h5>
-                <p class="card-text"><?php echo $recipe3['portionen']; ?> Portionen</p>
-                <?php
-                    foreach($recipe3_tags as &$tags){
-                        echo '<span class="badge bg-dark"style="background-color: #'.$tags['farbe'].' !important;">'. $tags['tag'].'</span> ';
-                }
-
-                ?></div>
         </div>
     </div>
 </div>
