@@ -4,12 +4,28 @@
 <body>
 <nav th:replace="fragments/navbar.html :: navbar"></nav>
 <div class="container-fluid">
+    <div class="row filter-bar">
+        <div class="col">
+            <h2>Your Search Results for: <span class="highlight" th:text="${searchTerm}"></span></h2>
+        </div>
+    </div>
+    <!-- Display message if there are no search results -->
+    <div class="row" th:if="${recipes.isEmpty()}">
+        <div class="col hero">
+            <h2 th:if="${message != null}" th:text="${message}">No Recipes found.</h2>
+            <div class="d-flex" aria-label="...">
+                <button onclick="window.location.href = '/'" type="button" class="btn w-100 btn-recipe">Search Again
+                </button>
+            </div>
+        </div>
+    </div>
     <div class="row">
         <p class="tiny-text" th:text="${recipes.size()} + ' recipes found'"></p>
     </div>
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-3 list-top-spacer">
         <div class="col" th:each="recipe : ${recipes}">
-            <div th:onclick="'window.location.href = \'' + '/recipe/' + ${recipe.id} + '\''" class="card-recipe clickable">
+            <div th:onclick="'window.location.href = \'' + '/recipe/' + ${recipe.id} + '\''"
+                 class="card-recipe clickable">
                 <div th:if="${recipe.getImageLink() != ''}">
                     <img th:src="${recipe.getImageLink()}" class="recipe-img-overview" alt="Image of food">
                 </div>
@@ -19,16 +35,10 @@
                 <div class="card-recipe-content">
                     <h5 class="card-title" th:text="${recipe.getName()}"></h5>
                     <p class="card-text"><span th:text="${recipe.getServings()}"></span> Portions</p>
-                    <span class="badge bg-dark badge-margin" th:each="tag : ${recipe.tags}" th:style="'background-color: #' + ${tag.color} + ' !important'" th:text="${tag.name}">Tag Name</span>
+                    <span class="badge bg-dark badge-margin" th:each="tag : ${recipe.tags}"
+                          th:style="'background-color: #' + ${tag.color} + ' !important'"
+                          th:text="${tag.name}">Tag Name</span>
                 </div>
-            </div>
-        </div>
-    </div>
-    <div class="row" th:if="${recipes.size() == 0}">
-        <div class="col hero">
-            <h2>No Recipes found.</h2>
-            <div class="d-flex" aria-label="...">
-                <button onclick="window.location.href = '/list'" type="button" class="btn w-100 btn-recipe">Clear filter</button>
             </div>
         </div>
     </div>

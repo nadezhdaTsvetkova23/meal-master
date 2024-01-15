@@ -40,9 +40,18 @@ public class MealMasterController {
     }
 
     @GetMapping("/search")
-    public String searchRecipes(@RequestParam String name, Model model) {
-        // Logic to get recipes based on the search query
-        List<Recipe> searchResults = recipeRepository.findByNameStartingWith(name);
+    public String searchRecipes(@RequestParam(required = false) String name, Model model) {
+        List<Recipe> searchResults;
+        if (name == null || name.trim().isEmpty()) {
+            // If the search query is empty, initialize an empty list
+            searchResults = Collections.emptyList();
+            model.addAttribute("message", "Please enter a search term.");
+        } else {
+            // Get recipes based on the search query
+            searchResults = recipeRepository.findByNameContainingIgnoreCase(name.trim());
+        }
+
+        model.addAttribute("searchTerm", name);
         model.addAttribute("recipes", searchResults);
         return "search-results";
     }
@@ -60,7 +69,7 @@ public class MealMasterController {
         // Split the tags string and process each tag
         for (String tagName : tags.split(",")) {
             tagName = tagName.trim();
-            tagName = tagName.substring(0, 1).toUpperCase() + tagName.substring(1).toLowerCase();;
+            tagName = tagName.substring(0, 1).toUpperCase() + tagName.substring(1).toLowerCase();
 
             // Find the tag in the repository or create a new one
             String finalTagName = tagName;
@@ -80,7 +89,7 @@ public class MealMasterController {
     }
 
     @GetMapping("editIngredients/{id}")
-    String showEditIngredientsForm(@PathVariable("id") long id, Model model){
+    String showEditIngredientsForm(@PathVariable("id") long id, Model model) {
         Recipe recipe = recipeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid Id:" + id));
 
         ArrayList<RecipeIngredient> recipeIngredients = recipeIngredientRepository.findByRecipe(recipe);
@@ -94,12 +103,12 @@ public class MealMasterController {
     }
 
     @PostMapping("addIngredient")
-    String submitAddIngredient(@RequestParam("recipe") Long recipeString, @RequestParam("ingredient") String ingredientString, @RequestParam("unit") String unitString, @RequestParam("amount") Double amountString){
+    String submitAddIngredient(@RequestParam("recipe") Long recipeString, @RequestParam("ingredient") String ingredientString, @RequestParam("unit") String unitString, @RequestParam("amount") Double amountString) {
 
         Ingredient ingredient = new Ingredient();
-        try{
-           ingredient =  ingredientRepository.findByName(ingredientString).orElseThrow(() -> new IllegalArgumentException("Invalid ingredient:" + ingredientString));
-        } catch(IllegalArgumentException e){
+        try {
+            ingredient = ingredientRepository.findByName(ingredientString).orElseThrow(() -> new IllegalArgumentException("Invalid ingredient:" + ingredientString));
+        } catch (IllegalArgumentException e) {
             ingredient.setName(ingredientString);
             ingredientRepository.save(ingredient);
         }
@@ -113,7 +122,8 @@ public class MealMasterController {
         recipeIngredient.setRecipe(recipe);
         recipeIngredient.setAmount(amountString);
 
-        Unit unit = unitRepository.findByName(unitString).orElseThrow(() -> new IllegalArgumentException("Invalid Id:" + unitString));;
+        Unit unit = unitRepository.findByName(unitString).orElseThrow(() -> new IllegalArgumentException("Invalid Id:" + unitString));
+        ;
         recipeIngredient.setUnit(unit);
 
         recipeIngredientRepository.save(recipeIngredient);
@@ -179,12 +189,12 @@ public class MealMasterController {
     @GetMapping("/deleteIngredient/{recipe-ingredient-id}")
     String deleteIngredientFromRecipe(@PathVariable("recipe-ingredient-id") long recipeIngredientID) {
         RecipeIngredient recipeIngredient = new RecipeIngredient();
-        try{
+        try {
             recipeIngredient = recipeIngredientRepository.findById(recipeIngredientID).orElseThrow(() -> new IllegalArgumentException("Invalid Id:" + recipeIngredientID));
 
             recipeIngredientRepository.delete(recipeIngredient);
             return "redirect:/editIngredients/" + recipeIngredient.getRecipe().getId();
-        }catch(IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
             return "redirect:/";
         }
@@ -194,13 +204,13 @@ public class MealMasterController {
     @GetMapping("/list")
     String showRecipeList(Model model, @RequestParam(required = false, defaultValue = "") List<String> tags) {
         System.out.println(tags);
-        if(!tags.isEmpty()){
+        if (!tags.isEmpty()) {
             Set<Recipe> recipes = new HashSet<>();
-            for(String tag: tags){
+            for (String tag : tags) {
                 recipes.addAll(recipeRepository.findByTags(new Tag(tag)));
             }
             model.addAttribute("recipes", recipes);
-        }else{
+        } else {
             model.addAttribute("recipes", recipeRepository.findAll());
         }
         model.addAttribute("tags", tagRepository.findAll());
@@ -266,9 +276,8 @@ public class MealMasterController {
     }
 
 
-
     @GetMapping("/report/tag")
-    String getTopIngredientForMostCommonTag(Model model){
+    String getTopIngredientForMostCommonTag(Model model) {
 
 
         ArrayList<Tag> tags = new ArrayList<>(tagRepository.findAll());
@@ -276,14 +285,14 @@ public class MealMasterController {
         HashMap<Tag, Integer> tagOccurance = new HashMap<>();
 
 
-        for(Tag tag: tags){
+        for (Tag tag : tags) {
             tagOccurance.put(tag, tag.getRecipes().size());
         }
 
         AtomicReference<Tag> topTag = new AtomicReference<>(new Tag());
         AtomicInteger topTagOccurrence = new AtomicInteger();
         tagOccurance.forEach((key, value) -> {
-            if(topTagOccurrence.get() < value){
+            if (topTagOccurrence.get() < value) {
                 topTag.set(key);
                 topTagOccurrence.set(value);
             }
@@ -297,11 +306,11 @@ public class MealMasterController {
 
         model.addAttribute("recipes", recipesWithTopTag);
 
-        for(Recipe recipe: recipesWithTopTag){
-            for(RecipeIngredient ri : recipeIngredientRepository.findByRecipe(recipe)){
-                if(ingredientOccurrence.get(ri.getIngredient()) != null){
-                    ingredientOccurrence.put(ri.getIngredient(), ingredientOccurrence.get(ri.getIngredient())+1);
-                }else{
+        for (Recipe recipe : recipesWithTopTag) {
+            for (RecipeIngredient ri : recipeIngredientRepository.findByRecipe(recipe)) {
+                if (ingredientOccurrence.get(ri.getIngredient()) != null) {
+                    ingredientOccurrence.put(ri.getIngredient(), ingredientOccurrence.get(ri.getIngredient()) + 1);
+                } else {
                     ingredientOccurrence.put(ri.getIngredient(), 1);
                 }
             }
@@ -317,8 +326,8 @@ public class MealMasterController {
         //Just get the top 5
         int i = 0;
         List<Ingredient> sortedAndFilteredIngredients = new ArrayList<>();
-        for(Map.Entry<Ingredient, Integer> entry: list){
-            if(i < 5){
+        for (Map.Entry<Ingredient, Integer> entry : list) {
+            if (i < 5) {
                 sortedAndFilteredIngredients.add(entry.getKey());
             }
             i++;
