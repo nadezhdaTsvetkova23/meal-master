@@ -34,6 +34,11 @@ public class Tag {
         setColor(colorArray[new Random().nextInt(colorArray.length)]);
     }
 
+    public Tag(String tag, String color){
+        setName(tag);
+        setColor(color);
+    }
+
     public String getName() {
         return name;
     }
