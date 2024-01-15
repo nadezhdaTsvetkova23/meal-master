@@ -30,17 +30,38 @@
         <h1 th:text="${recipe.getName()}"></h1>
         <span class="badge bg-dark badge-margin" th:each="tag : ${recipe.tags}" th:style="'background-color: #' + ${tag.color} + ' !important'" th:text="${tag.name}">Tag Name</span>
         <p th:text="${recipe.getInstruction()}" class="recipe-instructions"></p>
-        <button th:onclick="'window.location.href = \'' + '/editRecipe/' + ${recipe.id} + '\''" type="button" class="btn btn-recipe float-right">Edit Recipe</button><button class="btn btn-edit" th:onclick="'window.location.href = \'' + '/editIngredients/' + ${recipe.id} + '\''">Edit Ingredients</button>
-        <button class="btn btn-edit" th:onclick="'window.location.href = \'' + '/addFeedback/' + ${recipe.id} + '\''">Add Feedback</button>
+        <button th:onclick="'window.location.href = \'' + '/editRecipe/' + ${recipe.id} + '\''" type="button" class="btn btn-recipe float-right">Edit Recipe</button>
+        <button class="btn btn-edit float-right" th:onclick="'window.location.href = \'' + '/editIngredients/' + ${recipe.id} + '\''">Edit Ingredients</button>
+        <button class="btn btn-feedback float-right" th:onclick="'window.location.href = \'' + '/addFeedback/' + ${recipe.id} + '\''">Add Feedback</button>
       </div>
-      <div class="feedback-section">
-        <h3>Feedback</h3>
-        <div th:each="feedback : ${feedbacks}">
-          <div class="feedback">
-            <p><strong>Score:</strong> <span th:text="${feedback.score}"></span></p>
-            <p><strong>Comment:</strong> <span th:text="${feedback.comment}"></span></p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col card-recipe-detail-left">
+      <div class="card-recipe-content">
+        <h1>Feedback</h1>
+        <div th:each="feedback : ${feedbacks}" class="feedback">
+          <!-- User Name -->
+          <p class="feedback-user"><strong>User:</strong> <span th:text="${feedback.userName}"></span></p>
+
+          <!-- Star Rating -->
+          <div class="feedback-stars">
+            <i class="bi bi-star-fill" th:classappend="${feedback.score >= 1} ? 'yellow-star' : 'bi-star'"></i>
+            <i class="bi bi-star-fill" th:classappend="${feedback.score >= 2} ? 'yellow-star' : 'bi-star'"></i>
+            <i class="bi bi-star-fill" th:classappend="${feedback.score >= 3} ? 'yellow-star' : 'bi-star'"></i>
+            <i class="bi bi-star-fill" th:classappend="${feedback.score >= 4} ? 'yellow-star' : 'bi-star'"></i>
+            <i class="bi bi-star-fill" th:classappend="${feedback.score == 5} ? 'yellow-star' :'bi-star'"></i>
           </div>
-        </div>
+
+          <!-- Comment -->
+          <p class="feedback-comment"><strong>Comment:</strong> <span th:text="${feedback.comment}"></span></p>
+
+          <!-- Edit and Delete Icons -->
+          <div class="feedback-icons">
+            <a th:href="'/editFeedback/' + ${feedback.id}" class="icon-link"><i class="bi bi-gear-fill"></i></a>
+            <a th:href="'/deleteFeedback/' + ${feedback.id}" class="icon-link" onclick="return confirm('Are you sure you want to delete this feedback?')"><i class="bi bi-trash-fill"></i></a>
+          </div>
+          </div>
       </div>
     </div>
   </div>

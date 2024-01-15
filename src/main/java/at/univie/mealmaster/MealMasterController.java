@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -124,8 +125,6 @@ public class MealMasterController {
         return "redirect:/recipe/" + recipeId;
     }
 
-
-
     @GetMapping("/editRecipe/{id}")
     String showEditRecipeForm(@PathVariable("id") long id, Model model) {
         Recipe recipe = recipeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid Id:" + id));
@@ -203,6 +202,57 @@ public class MealMasterController {
         model.addAttribute("feedbacks", feedbacks);
         return "show-recipe";
     }
+
+
+    @GetMapping("/deleteFeedback/{feedbackId}")
+    String deleteFeedback(@PathVariable("feedbackId") long feedbackId) {
+        Feedback feedback = feedbackRepository.findById(feedbackId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid Feedback Id:" + feedbackId));
+        long recipeId = feedback.getRecipe().getId();
+        feedbackRepository.delete(feedback);
+        return "redirect:/recipe/" + recipeId;
+    }
+
+    @GetMapping("/editFeedback/{feedbackId}")
+    String showEditFeedbackForm(@PathVariable("feedbackId") long feedbackId, Model model) {
+        Feedback feedback = feedbackRepository.findById(feedbackId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid Feedback Id:" + feedbackId));
+
+        Recipe recipe = feedback.getRecipe();
+        if (recipe == null) {
+            throw new IllegalArgumentException("Recipe not found for feedback Id:" + feedbackId);
+        }
+
+        model.addAttribute("feedback", feedback);
+        model.addAttribute("recipe", recipe);
+        return "edit-feedback";
+    }
+
+
+  /*  @PostMapping("/editFeedback/{recipeId}")
+    public String editFeedback(@PathVariable("recipeId") long recipeId, @ModelAttribute Feedback feedback, RedirectAttributes redirectAttributes) {
+        Recipe recipe = recipeRepository.findById(recipeId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid Recipe Id:" + recipeId));
+
+        feedback.setRecipe(recipe);
+        feedbackRepository.save(feedback);
+        return "redirect:/recipe/" + recipeId;
+    }*/
+
+    @PostMapping("/editFeedback/{feedbackId}")
+    public String editFeedback(@PathVariable("feedbackId") long feedbackId, @ModelAttribute Feedback updatedFeedback, RedirectAttributes redirectAttributes) {
+        Feedback existingFeedback = feedbackRepository.findById(feedbackId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid Feedback Id:" + feedbackId));
+
+        existingFeedback.setUserName(updatedFeedback.getUserName()); // Assuming you have a userName field
+        existingFeedback.setScore(updatedFeedback.getScore());
+        existingFeedback.setComment(updatedFeedback.getComment());
+        feedbackRepository.save(existingFeedback);
+
+        return "redirect:/recipe/" + existingFeedback.getRecipe().getId();
+    }
+
+
 
     @GetMapping("/generateData")
     String generateData() {

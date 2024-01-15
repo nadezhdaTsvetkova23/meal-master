@@ -5,16 +5,15 @@
 <nav th:replace="fragments/navbar.html :: navbar"></nav>
 <div class="container-fluid white">
     <div class="row">
-        <div class="col create-recipe" >
-
-            <h2 th:text="${recipe.name} + ' - Add Feedback'"></h2>
-            <form class="row g-3" th:action="@{'/addFeedback/' + ${recipe.id}}" method="POST">
-                <input type="hidden" name="recipeId" th:value="${recipe.id}"/>
+        <div class="col">
+            <h2 th:text="${recipe.name} + ' - Edit Feedback'"></h2>
+            <form class="row g-3" th:action="@{'/editFeedback/' + ${feedback.getId()}}" method="POST">
+                <input type="hidden" name="recipeId" th:value="${feedback.getId()}"/>
 
                 <!-- User Name Field -->
                 <div class="col-md-6">
                     <label for="userName" class="form-label">Your Name</label>
-                    <input type="text" class="form-control" id="userName" name="userName" placeholder="Enter your name" required>
+                    <input type="text" class="form-control" id="userName" name="userName" th:value="${feedback.userName}" required>
                 </div>
 
                 <!-- Star Rating System -->
@@ -26,19 +25,20 @@
                         <i class="bi bi-star" data-value="3"></i>
                         <i class="bi bi-star" data-value="4"></i>
                         <i class="bi bi-star" data-value="5"></i>
-                        <input type="hidden" name="score" id="score" required>
+                        <input type="hidden" name="score" id="score" th:value="${feedback.score}" required>
                     </div>
                 </div>
+
 
                 <!-- Comment Field -->
                 <div class="col-md-12">
                     <label for="comment" class="form-label">Comment (optional)</label>
-                    <textarea name="comment" style="height: 108px;" class="form-control" id="comment"></textarea>
+                    <textarea name="comment" style="height: 108px;" class="form-control" id="comment" th:text="${feedback.comment}"></textarea>
                 </div>
 
                 <!-- Submit Button -->
                 <div class="col-12">
-                    <button class="btn btn-recipe" type="submit">Submit Feedback</button>
+                    <button class="btn btn-recipe" type="submit">Update Feedback</button>
                 </div>
             </form>
         </div>
@@ -46,33 +46,29 @@
 </div>
 
 <script>
-    document.querySelector('form').addEventListener('submit', function(event) {
-        var score = document.getElementById('score').value;
-        if (!score) {
-            alert('Please select a star rating.');
-            event.preventDefault();
-        }
-    });
+    document.addEventListener('DOMContentLoaded', function () {
+        let currentRating = document.getElementById('score').value || 0;
+        updateStars(currentRating);
 
-    document.querySelectorAll('#star-rating .bi').forEach(function(star, index) {
-        star.addEventListener('click', function() {
-            let rating = index + 1;
-            document.getElementById('score').value = rating;
-            updateStars(rating);
-        });
+        document.querySelectorAll('#star-rating .bi').forEach(function(star, index) {
+            star.addEventListener('click', function() {
+                let rating = index + 1;
+                document.getElementById('score').value = rating;
+                updateStars(rating);
+            });
 
-        star.addEventListener('mouseover', function() {
-            updateStars(index + 1);
-        });
+            star.addEventListener('mouseover', function() {
+                updateStars(index + 1);
+            });
 
-        star.addEventListener('mouseout', function() {
-            let rating = document.getElementById('score').value || 0;
-            updateStars(rating);
+            star.addEventListener('mouseout', function() {
+                updateStars(document.getElementById('score').value || 0);
+            });
         });
     });
 
     function updateStars(rating) {
-        document.querySelectorAll('#star-rating .bi').forEach(function(star, index) {
+        document.querySelectorAll('#star-rating .bi').forEach(function (star, index) {
             if (index < rating) {
                 star.classList.add('bi-star-fill');
                 star.classList.remove('bi-star');
@@ -87,7 +83,8 @@
 
 </script>
 
-
 </body>
 <div th:replace="fragments/footer.html :: footer"></div>
 </html>
+
+

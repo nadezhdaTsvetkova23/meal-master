@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 public class Feedback {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Long id;
 
     @ManyToOne // Many feedbacks can be associated with one recipe
@@ -16,7 +16,9 @@ public class Feedback {
     @Lob
     private String comment;
     @Column(nullable = false)
-    private Long score;
+    private Integer score;
+
+    private String userName;
 
     public Long getId() {
         return id;
@@ -42,11 +44,19 @@ public class Feedback {
         this.comment = comment;
     }
 
-    public Long getScore() {
+    public Integer getScore() {
         return score;
     }
 
-    public void setScore(Long score) {
+    public void setScore(Integer score) {
         this.score = score;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }
