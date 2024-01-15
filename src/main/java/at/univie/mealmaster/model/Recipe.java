@@ -2,6 +2,7 @@ package at.univie.mealmaster.model;
 
 import jakarta.persistence.*;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -26,6 +27,10 @@ public class Recipe {
             inverseJoinColumns = @JoinColumn(name = "tag_name")
     )
     private Set<Tag> tags;
+
+    public Recipe(){
+        tags = new HashSet<>();
+    }
 
     public String getName() {
         return name;
@@ -81,6 +86,10 @@ public class Recipe {
 
     public void setTags(Set<Tag> tags) {
         this.tags = tags;
+    }
+
+    public void addTag(Tag tag){
+        tags.add(tag);
     }
 
     public Set<RecipeIngredient> getRecipeIngredients(){

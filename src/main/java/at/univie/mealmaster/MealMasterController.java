@@ -1,5 +1,6 @@
 package at.univie.mealmaster;
 
+import at.univie.mealmaster.generator.ModelGenerator;
 import at.univie.mealmaster.model.*;
 import at.univie.mealmaster.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -322,6 +323,13 @@ public class MealMasterController {
 
     @GetMapping("/generateData")
     String generateData() {
+        ModelGenerator mg = new ModelGenerator();
+
+        unitRepository.saveAll(mg.getUnits());
+        tagRepository.saveAll(mg.getTags());
+        ingredientRepository.saveAll(mg.getIngredients());
+        recipeRepository.saveAll(mg.getRecipes());
+        recipeIngredientRepository.saveAll(mg.getRecipeIngredients());
 
         //add generateData()
         return "redirect:/";
