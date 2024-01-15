@@ -89,7 +89,7 @@ h1, h2, h3, h4 {
   cursor: pointer;
 }
 
-.card-recipe-content {
+.card-recipe-content, .card-report-content {
   padding: 10px;
 }
 
@@ -197,6 +197,7 @@ h1, h2, h3, h4 {
   width: 75%;
 }
 
+<<<<<<< HEAD
 .feedback {
   display: flex;
   justify-content: space-between;
@@ -256,6 +257,41 @@ h1, h2, h3, h4 {
 
 .icon-link:hover .bi-gear-fill, .icon-link:hover .bi-trash-fill {
   color: #3ebcee;
+=======
+.highlight {
+  color: #6dccf2 !important;
+}
+
+ol {
+  font-size: 2rem;
+  font-family: "Amatic SC", cursive;
+}
+
+li::marker {
+  color: #6dccf2;
+}
+
+.card-report-content {
+  padding: 20px;
+>>>>>>> origin/main
+.card-recipe-content, .card-report-content {
+}
+
+.highlight {
+  color: #6dccf2 !important;
+}
+
+ol {
+  font-size: 2rem;
+  font-family: "Amatic SC", cursive;
+}
+
+li::marker {
+  color: #6dccf2;
+}
+
+.card-report-content {
+  padding: 20px;
 }
 
 .select2-selection__choice {

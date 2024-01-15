@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:insert="fragments/head.html :: head">
+</head>
+
+<body>
+<nav th:replace="fragments/navbar.html :: navbar"></nav>
+<div class="container-fluid full-recipe-width">
+  <div class="row">
+    <div class="col card-recipe-detail-left">
+      <div class="card-report-content">
+        <h1><span class="highlight">Report:</span> Most common tag with top ingredients</h1>
+        <p>This report aims to find the most common tag across the whole platform and shows the most used ingredients for that tag.</p>
+        <br>
+        <h1>Most common tag: <span class="highlight" th:text="${tag.getName()}"></span></h1>
+        <p><span th:text="${tag.getName()}"></span> was found to be the most common tag in all recipes with <span th:text="${tagOccurrence.toString()}"></span> found recipes.</p>
+        <br>
+        <h1>Top 5 ingredients for <span th:text="${tag.getName()}"></span>:</h1>
+        <ol>
+          <li th:each="ingredient : ${ingredients}">
+            <span th:text="${ingredient.getName()}"></span>
+          </li>
+        </ol>
+        <br>
+        <h1>Our favourite recipes for <span class="highlight" th:text="${tag.getName()}"></span>:</h1>
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 list-top-spacer">
+          <div class="col" th:each="recipe : ${recipes}">
+            <div th:onclick="'window.location.href = \'' + '/recipe/' + ${recipe.id} + '\''" class="card-recipe clickable">
+              <div th:if="${recipe.getImageLink() != ''}">
+                <img th:src="${recipe.getImageLink()}" class="recipe-img-overview" alt="image of food">
+              </div>
+              <div th:unless="${recipe.getImageLink() != ''}">
+                <img th:src="@{/img/placeholder.png}" class="recipe-img-overview" alt="placeholder">
+              </div>
+              <div class="card-recipe-content">
+                <a th:href="'/editRecipe/' + ${recipe.getId()}"><i class="grid-settings bi bi-gear-fill"></i></a>
+                <h5 class="card-title" th:text="${recipe.getName()}"></h5>
+                <p class="card-text"><span th:text="${recipe.getServings()}"></span> Portions</p>
+                <span class="badge bg-dark badge-margin" th:each="tag : ${recipe.tags}" th:style="'background-color: #' + ${tag.color} + ' !important'" th:text="${tag.name}">Tag Name</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+<div th:replace="fragments/footer.html :: footer"></div>
+</html>
