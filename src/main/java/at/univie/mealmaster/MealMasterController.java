@@ -29,10 +29,18 @@ public class MealMasterController {
     private FeedbackRepository feedbackRepository;
 
     @GetMapping("/")
-    String showIndexPage() {
+    String showIndexPage(Model model) {
         //Checks if generatedContent.txt contains true and forwards to index. If it does not exist it forwards to setup page
         boolean contentGenerated = new CheckIfContentGenerated().checkFile();
         if (contentGenerated) {
+
+            //Get 4 random recipes
+            ArrayList<Recipe> recipes = new ArrayList<>(recipeRepository.findAll());
+            ArrayList<Recipe> randomRecipes = new ArrayList<>();
+            for(int i = 0; i< 4; i++){
+                randomRecipes.add(recipes.get(new Random().nextInt(recipes.size())));
+            }
+            model.addAttribute("recipes", randomRecipes);
             return "index";
         } else {
             return "setup";
