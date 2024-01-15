@@ -117,6 +117,7 @@ h1, h2, h3, h4 {
   background-color: #ff9e76;
   color: white;
   border-color: #ff9e76;
+  margin-left: 20px;
 }
 
 .btn-feedback:hover {
