@@ -339,7 +339,7 @@ public class MealMasterController {
         recipeRepository.saveAll(mg.getRecipes());
         recipeIngredientRepository.saveAll(mg.getRecipeIngredients());
 
-        //add generateData()
+        new CheckIfContentGenerated().writeTrueToFile();
         return "redirect:/";
     }
 }
