@@ -26,7 +26,7 @@
   </div>
   <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-3 list-top-spacer">
     <div class="col" th:each="recipe : ${mongoRecipes}">
-      <div th:onclick="|window.location.href = '/recipe/' + ${recipe.getId()}|"
+      <div th:onclick="'window.location.href = \'' + @{/recipe/}(id=${recipe.id}) + '\''"
            class="card-recipe clickable">
         <div th:if="${recipe.getImagelink() != ''}">
           <img th:src="${recipe.getImagelink()}" class="recipe-img-overview" alt="image of food">

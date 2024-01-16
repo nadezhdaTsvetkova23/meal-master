@@ -204,16 +204,16 @@ public class MealMasterController {
     }
 
     @GetMapping("/addFeedback/{recipeId}")
-    String showAddFeedbackForm(@PathVariable("recipeId") long recipeId, Model model) {
-        Recipe recipe = recipeRepository.findById(recipeId)
+    String showAddFeedbackForm(@PathVariable("recipeId") String recipeId, Model model) {
+        Recipe recipe = recipeRepository.findById(Long.valueOf(recipeId))
                 .orElseThrow(() -> new IllegalArgumentException("Invalid Recipe Id:" + recipeId));
         model.addAttribute("recipe", recipe);
         return "add-feedback";
     }
 
     @PostMapping("/addFeedback/{recipeId}")
-    String addFeedback(@PathVariable("recipeId") long recipeId, @ModelAttribute Feedback feedback) {
-        Recipe recipe = recipeRepository.findById(recipeId)
+    String addFeedback(@PathVariable("recipeId") String recipeId, @ModelAttribute Feedback feedback) {
+        Recipe recipe = recipeRepository.findById(Long.valueOf(recipeId))
                 .orElseThrow(() -> new IllegalArgumentException("Invalid Recipe Id:" + recipeId));
         feedback.setRecipe(recipe);
         feedbackRepository.save(feedback);
