@@ -61,7 +61,7 @@ public class MealMasterController {
             for(int i = 0; i< 4; i++){
                 randomRecipes.add(recipes.get(new Random().nextInt(recipes.size())));
             }
-            model.addAttribute("recipes", randomRecipes);
+            model.addAttribute("mongoRecipes", randomRecipes);
             return "index-mongo";
         }
     }
@@ -230,18 +230,22 @@ public class MealMasterController {
 
     @GetMapping("/list")
     String showRecipeList(Model model, @RequestParam(required = false, defaultValue = "") List<String> tags) {
-        System.out.println(tags);
-        if (!tags.isEmpty()) {
-            Set<Recipe> recipes = new HashSet<>();
-            for (String tag : tags) {
-                recipes.addAll(recipeRepository.findByTags(new Tag(tag)));
+        if(!useMongoDB){
+            if (!tags.isEmpty()) {
+                Set<Recipe> recipes = new HashSet<>();
+                for (String tag : tags) {
+                    recipes.addAll(recipeRepository.findByTags(new Tag(tag)));
+                }
+                model.addAttribute("recipes", recipes);
+            } else {
+                model.addAttribute("recipes", recipeRepository.findAll());
             }
-            model.addAttribute("recipes", recipes);
-        } else {
-            model.addAttribute("recipes", recipeRepository.findAll());
+            model.addAttribute("tags", tagRepository.findAll());
+            return "list";
+        }else{
+            model.addAttribute("mongoRecipes", mongoDBRecipeRepository.findAll());
+            return "list-mongo";
         }
-        model.addAttribute("tags", tagRepository.findAll());
-        return "list";
     }
 
     @GetMapping("/recipe/{id}")

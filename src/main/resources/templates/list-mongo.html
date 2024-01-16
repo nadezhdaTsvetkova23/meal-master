@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:insert="fragments/head.html :: head">
+</head>
+
+<body>
+<nav th:replace="fragments/navbar.html :: navbar"></nav>
+<div class="container-fluid">
+  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-3 list-top-spacer">
+    <div class="col" th:each="recipe : ${mongoRecipes}">
+      <div th:onclick="'window.location.href = \'' + '/recipe/' + ${recipe.getId()} + '\''"
+           class="card-recipe clickable">
+        <div th:if="${recipe.getImagelink() != ''}">
+          <img th:src="${recipe.getImagelink()}" class="recipe-img-overview" alt="image of food">
+        </div>
+        <div th:unless="${recipe.getImagelink() != ''}">
+          <img th:src="@{/img/placeholder.png}" class="recipe-img-overview" alt="placeholder">
+        </div>
+        <div class="card-recipe-content">
+          <a th:href="'/editRecipe/' + ${recipe.getId()}"><i class="grid-settings bi bi-gear-fill"></i></a>
+          <h5 class="card-title" th:text="${recipe.getName()}"></h5>
+          <p class="card-text"><span th:text="${recipe.getServings()}"></span> Portions</p>
+          <span class="badge bg-dark badge-margin" th:each="tag : ${recipe.getTags()}"
+                style="background-color: #8fd994 !important"
+                th:text="${tag}">Tag Name</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row" th:if="${recipes.size() == 0}">
+    <div class="col hero">
+      <h2>No Recipes found.</h2>
+      <div class="d-flex" aria-label="...">
+        <button onclick="window.location.href = '/list'" type="button" class="btn w-100 btn-recipe">Clear
+          filter
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  $(document).ready(function() {
+    $('.select2-multiple').select2();
+
+    $(".placeholder-tags").select2({
+      placeholder: "Select tags...",
+      allowClear: true
+    });
+
+    $('#submit-filter').click(function() {
+      var selectedTags = $('#tagSelect').val() || [];
+      if (selectedTags.length > 0) {
+        var queryParams = selectedTags.map(tag => 'tags=' + encodeURIComponent(tag)).join('&');
+        var newUrl = window.location.protocol + "//"
+                + window.location.host
+                + window.location.pathname
+                + '?' + queryParams;
+
+        window.location.href = newUrl;
+      } else {
+        //Redirect to normal list in case that filter is empty
+        var newUrl = window.location.protocol + "//"
+                + window.location.host
+                + window.location.pathname;
+
+        window.location.href= newUrl;
+      }
+    });
+  });
+
+
+</script>
+
+</body>
+<div th:replace="fragments/footer.html :: footer"></div>
+</html>
