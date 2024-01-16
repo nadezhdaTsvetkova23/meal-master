@@ -103,7 +103,7 @@ public class ModelGenerator {
                 recipe.addTag(tags.get(random.nextInt(tags.size())));
             }
             recipe.setName( cookingForms.get(random.nextInt(cookingForms.size())) +" "+randomIngredients.get(0).getName() + " with " +cookingForms.get(random.nextInt(cookingForms.size()))+" "+ randomIngredients.get(1).getName());
-            recipe.setInstruction("Cook the" + randomIngredients.get(0).getName() + " in salted water. Finely slice the " + randomIngredients.get(1).getName()+" and the " + randomIngredients.get(2).getName()+" and add it to the rest. Let it simmer for about 30 minutes and enjoy while still hot!");
+            recipe.setInstruction("Cook the " + randomIngredients.get(0).getName() + " in salted water. Finely slice the " + randomIngredients.get(1).getName()+" and the " + randomIngredients.get(2).getName()+" and add it to the rest. Let it simmer for about 30 minutes and enjoy while still hot!");
             recipe.setImageLink(imageLinks.get(random.nextInt(imageLinks.size())));
             recipe.setServings(1+ random.nextInt(5));
 
