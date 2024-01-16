@@ -21,6 +21,8 @@ public class ModelGenerator {
     private ArrayList<String> imageLinks;
     private ArrayList<String> cookingForms;
 
+    private ArrayList<Feedback> feedbacks;
+
     public ModelGenerator(){
        ingredients = new ArrayList<>();
        recipes = new ArrayList<>();
@@ -29,6 +31,7 @@ public class ModelGenerator {
        imageLinks = new ArrayList<>();
        cookingForms = new ArrayList<>();
        recipeIngredients = new ArrayList<>();
+       feedbacks = new ArrayList<>();
 
        cookingForms.add("grilled");
        cookingForms.add("cooked");
@@ -121,10 +124,24 @@ public class ModelGenerator {
             recipes.add(recipe);
         }
 
+        String[] sampleComments = {"Great recipe", "Loved it", "Could be better", "Delicious", "Needs improvement"};
 
+        for (Recipe recipe : recipes) {
+            for (int i = 0; i < 5; i++) {
+                Feedback feedback = new Feedback();
+                feedback.setRecipe(recipe);
+                feedback.setScore(random.nextInt(5) + 1); // Score between 1 and 5
+                if (random.nextBoolean()) { // Randomly decide whether to add a comment
+                    feedback.setComment(sampleComments[random.nextInt(sampleComments.length)]);
+                }
+                feedback.setUserName("User" + (random.nextInt(100) + 1)); // Random user name
 
+                feedbacks.add(feedback);
+            }
+        }
 
     }
+
     public ArrayList<Unit> getUnits(){
         return units;
     }
@@ -140,5 +157,9 @@ public class ModelGenerator {
     }
     public ArrayList<RecipeIngredient> getRecipeIngredients(){
         return recipeIngredients;
+    }
+
+    public ArrayList<Feedback> getFeedback() {
+        return feedbacks;
     }
 }
