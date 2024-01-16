@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 @Controller
 public class MealMasterController {
@@ -316,14 +317,9 @@ public class MealMasterController {
 
         for (Recipe recipe : recipesWithTopTag) {
             for (RecipeIngredient ri : recipeIngredientRepository.findByRecipe(recipe)) {
-                if (ingredientOccurrence.get(ri.getIngredient()) != null) {
-                    ingredientOccurrence.put(ri.getIngredient(), ingredientOccurrence.get(ri.getIngredient()) + 1);
-                } else {
-                    ingredientOccurrence.put(ri.getIngredient(), 1);
-                }
+                ingredientOccurrence.merge(ri.getIngredient(), 1, Integer::sum);
             }
         }
-
 
         //Add HashMap to list in order to sort it
         List<Map.Entry<Ingredient, Integer>> list = new ArrayList<>(ingredientOccurrence.entrySet());
@@ -346,7 +342,60 @@ public class MealMasterController {
         return "report-01";
     }
 
-    @GetMapping("/generateData")
+    @GetMapping("/report/ingredient")
+    public String getMostUsedIngredientsFromTopRatedRecipes(Model model) {
+        // Fetch all recipes and their average scores
+        List<Recipe> allRecipes = recipeRepository.findAll();
+        Map<Recipe, Double> recipeAverageScores = allRecipes.stream()
+                .collect(Collectors.toMap(recipe -> recipe, this::calculateAverageScore));
+
+        // Find the highest average score
+        double maxAverageScore = recipeAverageScores.values().stream()
+                .max(Double::compare)
+                .orElse(0.0);
+
+        // Filter recipes that have the highest average score
+        List<Recipe> topRatedRecipes = recipeAverageScores.entrySet().stream()
+                .filter(entry -> entry.getValue() == maxAverageScore)
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
+
+        // Count the frequency of ingredients in top-rated recipes
+        Map<Ingredient, Integer> ingredientFrequency = new HashMap<>();
+        for (Recipe recipe : topRatedRecipes) {
+            for (RecipeIngredient recipeIngredient : recipeIngredientRepository.findByRecipe(recipe)) {
+                ingredientFrequency.merge(recipeIngredient.getIngredient(), 1, Integer::sum);
+            }
+        }
+
+        // Find the most frequent ingredient with the highest score
+        Map.Entry<Ingredient, Integer> mostFrequentIngredientEntry = ingredientFrequency.entrySet().stream()
+                .max((e1, e2) -> {
+                    int compare = Integer.compare(e1.getValue(), e2.getValue());
+                    if (compare == 0) {
+                        // If frequency is the same, compare the ingredient names
+                        return e1.getKey().getName().compareToIgnoreCase(e2.getKey().getName());
+                    }
+                    return compare;
+                })
+                .orElse(null);
+
+        Ingredient mostFrequentIngredient = mostFrequentIngredientEntry != null ? mostFrequentIngredientEntry.getKey() : null;
+
+        // Add attributes to the model
+        model.addAttribute("mostFrequentIngredient", mostFrequentIngredient);
+        model.addAttribute("topRecipes", topRatedRecipes);
+
+        return "report-02";
+    }
+
+    private double calculateAverageScore(Recipe recipe) {
+        List<Feedback> feedbacks = feedbackRepository.findByRecipe(recipe);
+        if (feedbacks.isEmpty()) return 0;
+        return feedbacks.stream().mapToInt(Feedback::getScore).average().orElse(0);
+    }
+
+        @GetMapping("/generateData")
     String generateData() {
         ModelGenerator mg = new ModelGenerator();
 
@@ -355,6 +404,7 @@ public class MealMasterController {
         ingredientRepository.saveAll(mg.getIngredients());
         recipeRepository.saveAll(mg.getRecipes());
         recipeIngredientRepository.saveAll(mg.getRecipeIngredients());
+        feedbackRepository.saveAll(mg.getFeedback());
 
         new CheckIfContentGenerated().writeTrueToFile();
         return "redirect:/";

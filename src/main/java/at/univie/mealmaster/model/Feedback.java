@@ -59,4 +59,7 @@ public class Feedback {
     public void setUserName(String userName) {
         this.userName = userName;
     }
+
+    public void ifPresent(Object o) {
+    }
 }

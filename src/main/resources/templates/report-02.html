@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:insert="fragments/head.html :: head">
+</head>
+<body>
+<nav th:replace="fragments/navbar.html :: navbar"></nav>
+<div class="container-fluid full-recipe-width">
+    <div class="row">
+        <div class="col card-recipe-detail-left">
+            <div class="card-report-content">
+                <h1><span class="highlight">Report:</span> Most Used Ingredient from Top-Rated Recipes</h1>
+                <p>This report aims to uncover the ingredients that are common in highly-rated recipes, potentially guiding future recipe development and ingredient stock decisions.</p>
+                <br>
+                <h1>Most frequently used ingredient: <span class="highlight" th:if="${mostFrequentIngredient != null}" th:text="${mostFrequentIngredient.getName()}"></span></h1>
+                <br>
+                <h1>Top-rated recipes featuring these ingredients:</h1>
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 list-top-spacer">
+                    <div class="col" th:each="recipe : ${topRecipes}">
+                        <div th:onclick="'window.location.href = \'' + '/recipe/' + ${recipe.id} + '\''" class="card-recipe clickable">
+                            <div th:if="${recipe.imageLink != ''}">
+                                <img th:src="${recipe.imageLink}" class="recipe-img-overview" alt="image of food">
+                            </div>
+                            <div th:unless="${recipe.imageLink != ''}">
+                                <img th:src="@{/img/placeholder.png}" class="recipe-img-overview" alt="placeholder">
+                            </div>
+                            <div class="card-recipe-content">
+                                <h5 class="card-title" th:text="${recipe.name}"></h5>
+                                <p class="card-text"><span th:text="${recipe.servings} + ' Portions'"></span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="fragments/footer.html :: footer"></div>
+</body>
+</html>
