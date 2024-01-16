@@ -19,3 +19,24 @@ services:
       - "8090:80"
     environment:
       PMA_HOST: mariadb_mealmaster
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb_mealmaster
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./mongodb_data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: 647e5c285aa06f6a6419d2dcf93ca536
+      MONGO_INITDB_DATABASE: mealmaster
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: 647e5c285aa06f6a6419d2dcf93ca536
+      ME_CONFIG_MONGODB_SERVER: mongodb_mealmaster

@@ -1,0 +1,28 @@
+{
+  "_id": ObjectId,
+  name: str,
+  imagelink: str,
+  link: str,
+  instructions: str,
+  servings: int,
+  "tags": [ str ], //Reference to tags
+  ingredients: [
+    {
+      name: str,
+      amount: int,
+      unit: [
+        {
+          name: str,
+          abbreviation: str
+        }
+      ]
+    }
+  ],
+  feedback: [
+    {
+      user: str,
+      rating: int,
+      description: str
+    }
+  ]
+}
