@@ -2,7 +2,10 @@ package at.univie.mealmaster;
 
 import at.univie.mealmaster.generator.ModelGenerator;
 import at.univie.mealmaster.model.*;
+import at.univie.mealmaster.model.mongodb.MongoDBRecipe;
 import at.univie.mealmaster.repository.*;
+import at.univie.mealmaster.repository.mongodb.MongoDBRecipeRepository;
+import at.univie.mealmaster.repository.mongodb.MongoDBTagRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,23 +30,39 @@ public class MealMasterController {
     private TagRepository tagRepository;
     @Autowired
     private FeedbackRepository feedbackRepository;
+    @Autowired
+    private MongoDBRecipeRepository mongoDBRecipeRepository;
+    @Autowired
+    private MongoDBTagRepository mongoDBTagRepository;
+
+    private boolean useMongoDB = false;
 
     @GetMapping("/")
     String showIndexPage(Model model) {
-        //Checks if generatedContent.txt contains true and forwards to index. If it does not exist it forwards to setup page
-        boolean contentGenerated = new CheckIfContentGenerated().checkFile();
-        if (contentGenerated) {
+        if(!useMongoDB){
+            //Checks if generatedContent.txt contains true and forwards to index. If it does not exist it forwards to setup page
+            boolean contentGenerated = new CheckIfContentGenerated().checkFile();
+            if (contentGenerated) {
 
-            //Get 4 random recipes
-            ArrayList<Recipe> recipes = new ArrayList<>(recipeRepository.findAll());
-            ArrayList<Recipe> randomRecipes = new ArrayList<>();
+                //Get 4 random recipes
+                ArrayList<Recipe> recipes = new ArrayList<>(recipeRepository.findAll());
+                ArrayList<Recipe> randomRecipes = new ArrayList<>();
+                for(int i = 0; i< 4; i++){
+                    randomRecipes.add(recipes.get(new Random().nextInt(recipes.size())));
+                }
+                model.addAttribute("recipes", randomRecipes);
+                return "index";
+            } else {
+                return "setup";
+            }
+        }else{
+            ArrayList<MongoDBRecipe> recipes = new ArrayList<>(mongoDBRecipeRepository.findAll());
+            ArrayList<MongoDBRecipe> randomRecipes = new ArrayList<>();
             for(int i = 0; i< 4; i++){
                 randomRecipes.add(recipes.get(new Random().nextInt(recipes.size())));
             }
             model.addAttribute("recipes", randomRecipes);
-            return "index";
-        } else {
-            return "setup";
+            return "index-mongo";
         }
     }
 
@@ -259,17 +278,6 @@ public class MealMasterController {
         return "edit-feedback";
     }
 
-
-  /*  @PostMapping("/editFeedback/{recipeId}")
-    public String editFeedback(@PathVariable("recipeId") long recipeId, @ModelAttribute Feedback feedback, RedirectAttributes redirectAttributes) {
-        Recipe recipe = recipeRepository.findById(recipeId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid Recipe Id:" + recipeId));
-
-        feedback.setRecipe(recipe);
-        feedbackRepository.save(feedback);
-        return "redirect:/recipe/" + recipeId;
-    }*/
-
     @PostMapping("/editFeedback/{feedbackId}")
     public String editFeedback(@PathVariable("feedbackId") long feedbackId, @ModelAttribute Feedback updatedFeedback) {
         Feedback existingFeedback = feedbackRepository.findById(feedbackId)
@@ -357,6 +365,36 @@ public class MealMasterController {
         recipeIngredientRepository.saveAll(mg.getRecipeIngredients());
 
         new CheckIfContentGenerated().writeTrueToFile();
+        return "redirect:/";
+    }
+
+    @GetMapping("/useMongo")
+    String useMongoDB(){
+        useMongoDB = true;
+
+
+        //Migrate all Recipes
+        ArrayList<Recipe> recipes = new ArrayList<>(recipeRepository.findAll());
+        ArrayList<MongoDBRecipe> mongoDBRecipes = new ArrayList<>();
+
+        for(Recipe recipe: recipes){
+            MongoDBRecipe mongoDBRecipe = new MongoDBRecipe();
+
+            mongoDBRecipe.setName(recipe.getName());
+            mongoDBRecipe.setImagelink(recipe.getImageLink());
+            mongoDBRecipe.setLink(recipe.getLink());
+            mongoDBRecipe.setInstructions(recipe.getInstruction());
+            mongoDBRecipe.setServings(recipe.getServings());
+
+            for(RecipeIngredient ri : recipe.getRecipeIngredients()){
+                mongoDBRecipe.addIngredient(ri.getIngredient().getName(), ri.getAmount(), ri.getUnit().getName(), ri.getUnit().getAbbreviation());
+            }
+            mongoDBRecipes.add(new MongoDBRecipe());
+        }
+        mongoDBRecipeRepository.saveAll(mongoDBRecipes);
+
+
+
         return "redirect:/";
     }
 }

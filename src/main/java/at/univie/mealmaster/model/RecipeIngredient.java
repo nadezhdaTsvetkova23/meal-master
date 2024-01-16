@@ -54,8 +54,8 @@ public class RecipeIngredient {
         this.unit = unit;
     }
 
-    public Double getAmount() {
-        return amount;
+    public int getAmount() {
+        return amount.intValue();
     }
 
     public void setAmount(Double amount) {
