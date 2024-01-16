@@ -23,15 +23,6 @@ services:
       MYSQL_PASSWORD: d4bc1e78e053c6c2d0419bd742b41adc
     networks:
       - app-network
-  phpmyadmin:
-    image: phpmyadmin
-    restart: always
-    ports:
-      - "8090:80"
-    environment:
-      PMA_HOST: mariadb_mealmaster
-    networks:
-      - app-network
 
 networks:
   app-network:
