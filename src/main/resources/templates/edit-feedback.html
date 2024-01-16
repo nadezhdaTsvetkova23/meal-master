@@ -5,7 +5,7 @@
 <nav th:replace="fragments/navbar.html :: navbar"></nav>
 <div class="container-fluid white">
     <div class="row">
-        <div class="col">
+        <div class="col create-recipe">
             <h2 th:text="${recipe.name} + ' - Edit Feedback'"></h2>
             <form class="row g-3" th:action="@{'/editFeedback/' + ${feedback.getId()}}" method="POST">
                 <input type="hidden" name="recipeId" th:value="${feedback.getId()}"/>
