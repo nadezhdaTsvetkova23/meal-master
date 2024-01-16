@@ -8,7 +8,7 @@
 <div class="container-fluid">
   <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-3 list-top-spacer">
     <div class="col" th:each="recipe : ${mongoRecipes}">
-      <div th:onclick="'window.location.href = \'' + '/recipe/' + ${recipe.getId()} + '\''"
+      <div th:onclick="|window.location.href = '/recipe/' + ${recipe.getId()}|"
            class="card-recipe clickable">
         <div th:if="${recipe.getImagelink() != ''}">
           <img th:src="${recipe.getImagelink()}" class="recipe-img-overview" alt="image of food">
@@ -17,7 +17,6 @@
           <img th:src="@{/img/placeholder.png}" class="recipe-img-overview" alt="placeholder">
         </div>
         <div class="card-recipe-content">
-          <a th:href="'/editRecipe/' + ${recipe.getId()}"><i class="grid-settings bi bi-gear-fill"></i></a>
           <h5 class="card-title" th:text="${recipe.getName()}"></h5>
           <p class="card-text"><span th:text="${recipe.getServings()}"></span> Portions</p>
           <span class="badge bg-dark badge-margin" th:each="tag : ${recipe.getTags()}"
@@ -27,7 +26,7 @@
       </div>
     </div>
   </div>
-  <div class="row" th:if="${recipes.size() == 0}">
+  <div class="row" th:if="${mongoRecipes.size() == 0}">
     <div class="col hero">
       <h2>No Recipes found.</h2>
       <div class="d-flex" aria-label="...">
