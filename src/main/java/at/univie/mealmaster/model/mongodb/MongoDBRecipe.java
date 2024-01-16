@@ -103,6 +103,10 @@ public class MongoDBRecipe {
     public void setFeedback(List<Feedback> feedback) {
         this.feedback = feedback;
     }
+
+    public void addTag(String name) {
+        tags.add(name);
+    }
 }
 
 class Ingredient {

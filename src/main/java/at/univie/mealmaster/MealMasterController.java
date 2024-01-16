@@ -3,6 +3,7 @@ package at.univie.mealmaster;
 import at.univie.mealmaster.generator.ModelGenerator;
 import at.univie.mealmaster.model.*;
 import at.univie.mealmaster.model.mongodb.MongoDBRecipe;
+import at.univie.mealmaster.model.mongodb.MongoDBTag;
 import at.univie.mealmaster.repository.*;
 import at.univie.mealmaster.repository.mongodb.MongoDBRecipeRepository;
 import at.univie.mealmaster.repository.mongodb.MongoDBTagRepository;
@@ -91,28 +92,64 @@ public class MealMasterController {
 
     @PostMapping("/addRecipe")
     String submitAddRecipeForm(@ModelAttribute Recipe recipe, @RequestParam("string-tags") String tags) {
-        Set<Tag> tagSet = new HashSet<>();
+        if(!useMongoDB){
+            Set<Tag> tagSet = new HashSet<>();
 
-        // Split the tags string and process each tag
-        for (String tagName : tags.split(",")) {
-            tagName = tagName.trim();
-            tagName = tagName.substring(0, 1).toUpperCase() + tagName.substring(1).toLowerCase();
+            // Split the tags string and process each tag
+            for (String tagName : tags.split(",")) {
+                tagName = tagName.trim();
+                tagName = tagName.substring(0, 1).toUpperCase() + tagName.substring(1).toLowerCase();
 
-            // Find the tag in the repository or create a new one
-            String finalTagName = tagName;
-            Tag tag = tagRepository.findByName(tagName)
-                    .orElseGet(() -> new Tag(finalTagName));
+                // Find the tag in the repository or create a new one
+                String finalTagName = tagName;
+                Tag tag = tagRepository.findByName(tagName)
+                        .orElseGet(() -> new Tag(finalTagName));
 
-            tagSet.add(tag);
-            tagRepository.save(tag);
+                tagSet.add(tag);
+                tagRepository.save(tag);
+            }
+
+            recipe.setTags(tagSet);
+
+            // Save the recipe
+            recipeRepository.save(recipe);
+
+            return "redirect:/editIngredients/" + recipe.getId();
+        }else{
+
+            Set<MongoDBTag> tagSet = new HashSet<>();
+
+            // Split the tags string and process each tag
+            for (String tagName : tags.split(",")) {
+                tagName = tagName.trim();
+                tagName = tagName.substring(0, 1).toUpperCase() + tagName.substring(1).toLowerCase();
+
+                // Find the tag in the repository or create a new one
+                String finalTagName = tagName;
+                MongoDBTag tag = mongoDBTagRepository.findByName(tagName)
+                        .orElseGet(() -> new MongoDBTag(finalTagName));
+
+                tagSet.add(tag);
+                mongoDBTagRepository.save(tag);
+            }
+
+
+
+            MongoDBRecipe mongoDBRecipe = new MongoDBRecipe();
+            for(MongoDBTag tag: tagSet){
+                mongoDBRecipe.addTag(tag.getName());
+            }
+            mongoDBRecipe.setName(recipe.getName());
+            mongoDBRecipe.setLink(recipe.getLink());
+            mongoDBRecipe.setServings(recipe.getServings());
+            mongoDBRecipe.setImagelink(recipe.getImageLink());
+            mongoDBRecipe.setInstructions(recipe.getInstruction());
+
+            // Save the recipe
+            mongoDBRecipeRepository.save(mongoDBRecipe);
+
+            return "redirect:/recipe/" + mongoDBRecipe.getId();
         }
-
-        recipe.setTags(tagSet);
-
-        // Save the recipe
-        recipeRepository.save(recipe);
-
-        return "redirect:/editIngredients/" + recipe.getId();
     }
 
     @GetMapping("editIngredients/{id}")
@@ -130,32 +167,40 @@ public class MealMasterController {
     }
 
     @PostMapping("addIngredient")
-    String submitAddIngredient(@RequestParam("recipe") Long recipeString, @RequestParam("ingredient") String ingredientString, @RequestParam("unit") String unitString, @RequestParam("amount") Double amountString) {
+    String submitAddIngredient(@RequestParam("recipe") String recipeString, @RequestParam("ingredient") String ingredientString, @RequestParam("unit") String unitString, @RequestParam("amount") Double amountString) {
+        if(!useMongoDB){
+            Ingredient ingredient = new Ingredient();
+            try {
+                ingredient = ingredientRepository.findByName(ingredientString).orElseThrow(() -> new IllegalArgumentException("Invalid ingredient:" + ingredientString));
+            } catch (IllegalArgumentException e) {
+                ingredient.setName(ingredientString);
+                ingredientRepository.save(ingredient);
+            }
 
-        Ingredient ingredient = new Ingredient();
-        try {
-            ingredient = ingredientRepository.findByName(ingredientString).orElseThrow(() -> new IllegalArgumentException("Invalid ingredient:" + ingredientString));
-        } catch (IllegalArgumentException e) {
-            ingredient.setName(ingredientString);
-            ingredientRepository.save(ingredient);
+            RecipeIngredient recipeIngredient = new RecipeIngredient();
+
+            recipeIngredient.setIngredient(ingredient);
+
+            Recipe recipe = recipeRepository.findById(Long.parseLong(recipeString)).orElseThrow(() -> new IllegalArgumentException("Invalid Id:" + recipeString));
+
+            recipeIngredient.setRecipe(recipe);
+            recipeIngredient.setAmount(amountString);
+
+            Unit unit = unitRepository.findByName(unitString).orElseThrow(() -> new IllegalArgumentException("Invalid Id:" + unitString));
+            ;
+            recipeIngredient.setUnit(unit);
+
+            recipeIngredientRepository.save(recipeIngredient);
+
+            return "redirect:/";
+        }else{
+
+            MongoDBRecipe mongoDBRecipe = mongoDBRecipeRepository.findById(recipeString).orElseThrow(() -> new IllegalArgumentException("Invalid Id:" + recipeString));;
+
+            //Abbrevation not yet supported
+            mongoDBRecipe.addIngredient(ingredientString, amountString.intValue(), unitString, unitString);
+            return "redirect:/";
         }
-
-        RecipeIngredient recipeIngredient = new RecipeIngredient();
-
-        recipeIngredient.setIngredient(ingredient);
-
-        Recipe recipe = recipeRepository.findById(recipeString).orElseThrow(() -> new IllegalArgumentException("Invalid Id:" + recipeString));
-
-        recipeIngredient.setRecipe(recipe);
-        recipeIngredient.setAmount(amountString);
-
-        Unit unit = unitRepository.findByName(unitString).orElseThrow(() -> new IllegalArgumentException("Invalid Id:" + unitString));
-        ;
-        recipeIngredient.setUnit(unit);
-
-        recipeIngredientRepository.save(recipeIngredient);
-
-        return "redirect:/";
     }
 
     @GetMapping("/addFeedback/{recipeId}")
