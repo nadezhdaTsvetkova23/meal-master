@@ -421,10 +421,8 @@ public class MealMasterController {
     String useMongoDB(){
         useMongoDB = true;
 
-
         //Migrate all Recipes
         ArrayList<Recipe> recipes = new ArrayList<>(recipeRepository.findAll());
-        ArrayList<MongoDBRecipe> mongoDBRecipes = new ArrayList<>();
 
         for(Recipe recipe: recipes){
             MongoDBRecipe mongoDBRecipe = new MongoDBRecipe();
@@ -438,11 +436,9 @@ public class MealMasterController {
             for(RecipeIngredient ri : recipe.getRecipeIngredients()){
                 mongoDBRecipe.addIngredient(ri.getIngredient().getName(), ri.getAmount(), ri.getUnit().getName(), ri.getUnit().getAbbreviation());
             }
-            mongoDBRecipes.add(new MongoDBRecipe());
+
+            mongoDBRecipeRepository.save(mongoDBRecipe);
         }
-        mongoDBRecipeRepository.saveAll(mongoDBRecipes);
-
-
 
         return "redirect:/";
     }
