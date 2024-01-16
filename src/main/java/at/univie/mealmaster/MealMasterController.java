@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -258,6 +259,13 @@ public class MealMasterController {
     @GetMapping("/deleteRecipe/{id}")
     String deleteRecipe(@PathVariable("id") long id, Model model) {
         Recipe recipe = recipeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid Id:" + id));
+
+        ArrayList<RecipeIngredient> recipeIngredients = recipeIngredientRepository.findByRecipe(recipe);
+        recipeIngredientRepository.deleteAll(recipeIngredients);
+
+        ArrayList<Feedback> feedbacks = new ArrayList<>(feedbackRepository.findByRecipe(recipe));
+        feedbackRepository.deleteAll(feedbacks);
+
         recipeRepository.delete(recipe);
         return "redirect:/";
     }
