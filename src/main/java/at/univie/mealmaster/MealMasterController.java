@@ -132,7 +132,7 @@ public class MealMasterController {
         recipeIngredient.setAmount(amountString);
 
         Unit unit = unitRepository.findByName(unitString).orElseThrow(() -> new IllegalArgumentException("Invalid Id:" + unitString));
-        ;
+
         recipeIngredient.setUnit(unit);
 
         recipeIngredientRepository.save(recipeIngredient);
