@@ -94,23 +94,26 @@ public class MealMasterController {
     @PostMapping("/addRecipe")
     String submitAddRecipeForm(@ModelAttribute Recipe recipe, @RequestParam("string-tags") String tags) {
         if(!useMongoDB){
-            Set<Tag> tagSet = new HashSet<>();
+            if(!tags.isBlank()){
+                Set<Tag> tagSet = new HashSet<>();
 
-            // Split the tags string and process each tag
-            for (String tagName : tags.split(",")) {
-                tagName = tagName.trim();
-                tagName = tagName.substring(0, 1).toUpperCase() + tagName.substring(1).toLowerCase();
+                // Split the tags string and process each tag
+                for (String tagName : tags.split(",")) {
+                    tagName = tagName.trim();
+                    tagName = tagName.substring(0, 1).toUpperCase() + tagName.substring(1).toLowerCase();
 
-                // Find the tag in the repository or create a new one
-                String finalTagName = tagName;
-                Tag tag = tagRepository.findByName(tagName)
-                        .orElseGet(() -> new Tag(finalTagName));
+                    // Find the tag in the repository or create a new one
+                    String finalTagName = tagName;
+                    Tag tag = tagRepository.findByName(tagName)
+                            .orElseGet(() -> new Tag(finalTagName));
 
-                tagSet.add(tag);
-                tagRepository.save(tag);
+                    tagSet.add(tag);
+                    tagRepository.save(tag);
+                }
+                recipe.setTags(tagSet);
             }
 
-            recipe.setTags(tagSet);
+
 
             // Save the recipe
             recipeRepository.save(recipe);

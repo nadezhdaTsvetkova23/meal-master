@@ -11,7 +11,5 @@ import java.util.List;
 public interface RecipeRepository extends JpaRepository<Recipe, Long> {
 
     ArrayList<Recipe> findByTags(Tag tags);
-    List<Recipe> findByNameStartingWith(String name);
     List<Recipe> findByNameContainingIgnoreCase(String trim);
-    //DB Queries
 }
